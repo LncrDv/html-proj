@@ -1,0 +1,86 @@
+*{
+	padding : 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+div{
+  display: flex;
+}
+.logo{
+  height: 100%;
+  mix-blend-mode: multiply;
+  position: relative;
+  margin-left: 5%;
+}
+.buffer-container{
+  height: 100%;
+  width: 27%;
+}
+.buttons{
+  font-family: "New Century Schoolbook";
+  font-size:3em;
+  position: relative;
+  text-align: left;
+  margin-top: 2%;
+  margin-left: 1%;
+  color: rgb(255, 231, 145);
+}
+.btn{
+  margin-top: 44%;
+  margin-left: 1%;
+}
+.saveContainer{
+  align-items: flex-end;
+  margin-right: 2%;
+  margin-bottom: 2%;
+}
+.the_button_container{
+  margin-left: 2%;
+}
+.buffer{
+}
+.btn-makers{
+  width: 100%;
+  height: 20%;
+  margin-top: 4%;
+  margin-left: 4%;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.btcounter{
+  font-family: "New Century Schoolbook";
+  font-size:3em;
+  position: relative;
+  text-align: left;
+  margin-top: 3%;
+  margin-left: 2%;
+  color: rgb(255, 231, 145);
+}
+.text-container{
+  background-color: rgba(190, 172, 108);
+  height: 17%;
+}
+.title-container{
+  background-color: rgb(255, 231, 145);
+  height: 100vh;
+  width: 100%;
+  flex-direction: column;
+}
+.button-container{
+  height: 100%;
+  justify-content: space-between;
+  align-items: bottom;
+}
+button{
+  height: 45px;
+  width: 130px;
+  color: rgb(0,0,0);
+  border-radius: 25px;
+  border-color: orange;
+  background-color: rgb(255, 226, 128);
+  font-family: "New Century Schoolbook";
+  font-size:18px;
+}
+button:hover{
+  background-color: rgb(230, 205, 122)
+}
