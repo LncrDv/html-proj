@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Button</title>
+    <link rel="stylesheet" href="../css/button_style.css">
+    <script src="../js/button_manager.js" type="text/javascript" defer></script>
+    <link rel="icon" type = "image/png" href="../button_logo.png"/>
+  </head>
+  <body>
+    <div class="title-container">
+      <div class="text-container">
+        <img src="../button_logo.png" class="logo">
+        <h1 class="buttons">Buttons :</h1>
+        <span id="nb_buttons" class="btcounter">0</span>
+        <div class="the_button_container">
+          <button id="get_btn" onClick="addbtn()" class="btn">Get buttons</button>
+        </div>
+      </div>
+      <div class="button-container">
+        <div class="buffer-container">
+          <div class="btn-makers">
+            <button id="get_btnmakers" onClick="getbtnmaker()" class="buffer">Get a button maker</button>
+            <h3 class="buffer">Button makers :</h3>
+            <h3 class="buffer"><span id="nb_btnmakers" class="counter">0</span></h3>
+            <br/>
+            <h3 class="buffer">Price :</h3>
+            <h3 class="buffer"><span id="price" class="counter">0</span></h3>
+          </div>
+        </div>
+        <div class="saveContainer">
+          <button id="saver" onClick="saveGame()" class="saver">Save game progress</button>
+          <button id="reset" onClick="resetGame()" class="reseter">Reset everything</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
