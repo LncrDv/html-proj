@@ -1,0 +1,40 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    color:white;
+    text-shadow:-5px -5px 0 #000;
+}
+
+.bg{
+    background-image:url("../fish.gif");
+    background-size:cover;
+}
+
+marquee{
+    height:100vh;
+}
+
+.center{
+    display:flex;
+    justify-content:center;
+}
+
+.title{
+    display:flex;
+    justify-content:center;
+    background-color:black;
+}
+
+.hover-img{
+    width:200px;
+    height:auto;
+    transition: transform 0.25s ease;   /* smooth growth */
+}
+
+/* grow + swap image */
+.hover-img:hover{
+    content:url("../cat.png");
+    transform: scale(1.6);   /* change number for bigger/smaller growth */
+}
+
