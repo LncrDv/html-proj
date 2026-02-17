@@ -1,70 +1,70 @@
-var btn = 0;
-var btnmaker = 0;
-var price = 10 * (1.5**btnmaker);
-loadGame();
+var buttonScore = 0;
+var upg_buttonMaker = 0;
+var price_buttonMaker = 10 * (1.5**upg_buttonMaker);
+LoadGame();
 
 
 const btnDisplay = document.querySelector("#nb_buttons");
 const makerDisplay = document.querySelector("#nb_btnmakers");
 const priceDisplay = document.querySelector("#price");
-function updateDisplay(){
-    btnDisplay.innerText = Math.floor(btn);
-    makerDisplay.innerText = Math.floor(btnmaker);
-    priceDisplay.innerText = Math.floor(price);
+function UpdateDisplay(){
+    btnDisplay.innerText = Math.floor(buttonScore);
+    makerDisplay.innerText = Math.floor(upg_buttonMaker);
+    priceDisplay.innerText = Math.floor(price_buttonMaker);
 }
-updateDisplay()
+UpdateDisplay()
 
 
-function addbtn(){
-    btn++;
-    updateDisplay();
+function AddButtonToScore(){
+    buttonScore++;
+    UpdateDisplay();
 }
-function getbtnmaker(){
-    if (btn >= Math.floor(price)){
-        btn -= Math.floor(price);
-        price = 10 * (1.5**btnmaker);
-        btnmaker++;
-        updateDisplay();
+function BuyButtonMaker(){
+    if (buttonScore >= Math.floor(price_buttonMaker)){
+        buttonScore -= Math.floor(price_buttonMaker);
+        price_buttonMaker = 10 * (1.5**upg_buttonMaker);
+        upg_buttonMaker++;
+        UpdateDisplay();
     }
 }
 
-
+//Timer
 setInterval(function(){
-    btn += btnmaker * 0.1;
-    updateDisplay();
+    buttonScore += upg_buttonMaker * 0.1;
+    UpdateDisplay();
 }, 100);
 setInterval(function() {
-    saveGame();
+    SaveGame();
 }, 5000);
 
 
-function saveGame() {
+function SaveGame() {
     const gameData = {
-        btn: btn,
-        btnmaker: btnmaker,
-        price: price
+        btn: buttonScore,
+        btnmaker: upg_buttonMaker,
+        price: price_buttonMaker
     };
     localStorage.setItem("buttonGameSave", JSON.stringify(gameData));
 }
-function resetGame() {
-    btn = 0
-    btnmaker = 0
-    price = 10 * (1.5**btnmaker)
-    updateDisplay()
+function ResetGame() {
+    buttonScore = 0
+    upg_buttonMaker = 0
+    price_buttonMaker = 10 * (1.5**upg_buttonMaker)
+    UpdateDisplay()
     const gameData = {
-        btn: btn,
-        btnmaker: btnmaker,
-        price: price
+        btn: buttonScore,
+        btnmaker: upg_buttonMaker,
+        price: price_buttonMaker
     };
     localStorage.setItem("buttonGameSave", JSON.stringify(gameData));
 }
-function loadGame() {
+function LoadGame() {
     const savedData = localStorage.getItem("buttonGameSave");
     if (savedData) {
         const parsedData = JSON.parse(savedData);
 
-        btn = parsedData.btn;
-        btnmaker = parsedData.btnmaker;
-        price = parsedData.price;
+        buttonScore = parsedData.btn;
+        upg_buttonMaker = parsedData.btnmaker;
+        price_buttonMaker = parsedData.price;
     }
 }
