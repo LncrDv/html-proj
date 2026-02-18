@@ -1,39 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Hewo</title>
-    <meta charset="utf-8">
     <link rel="stylesheet" href="../css/page_sacha_css.css">
 </head>
-
-<body class="bg">
-
-    <h1 class="title">hewo</h1>
+<body class="bg" style="cursor: pointer;" onclick="document.getElementById('bgAudio').play(); this.onclick=null;">
+    <audio id="bgAudio" src="../funkytown.mp3" loop></audio>
 
     <marquee behavior="alternate" scrollamount="30">
         <marquee behavior="alternate" direction="down" scrollamount="30">
 
             <h1 id="catTitle">:|</h1>
 
-
             <img class="hover-img"
-     src="../oiia-cat-cat.gif"
-     alt="cat"
-     onmouseover="
-        document.getElementById('catTitle').textContent=':3';
-        this.closest('marquee').stop();
-        this.closest('marquee').parentElement.closest('marquee').stop();
-     "
-     onmouseout="
-        document.getElementById('catTitle').textContent=':|';
-        this.closest('marquee').start();
-        this.closest('marquee').parentElement.closest('marquee').start();
-     ">
-
-
+                src="../oiia-cat-cat.gif"
+                alt="cat"
+                onmouseover="
+                    document.getElementById('catTitle').textContent='';
+                    this.closest('marquee').stop();
+                    this.closest('marquee').parentElement.closest('marquee').stop();
+                    document.getElementById('bgAudio').pause();
+                    document.body.classList.add('black-bg');
+                "
+                onmouseout="
+                    document.getElementById('catTitle').textContent=':3';
+                    this.closest('marquee').start();
+                    this.closest('marquee').parentElement.closest('marquee').start();
+                    document.getElementById('bgAudio').play();
+                    document.body.classList.remove('black-bg');
+                ">
 
         </marquee>
     </marquee>
+
+    <p style="color:white; text-align:center; margin-top:20px;">
+        Click anywhere to start the music 🎵
+    </p>
 
 </body>
 </html>

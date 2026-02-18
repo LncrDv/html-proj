@@ -1,4 +1,4 @@
-*{
+* {
     margin:0;
     padding:0;
     box-sizing:border-box;
@@ -6,35 +6,38 @@
     text-shadow:-5px -5px 0 #000;
 }
 
-.bg{
-    background-image:url("../fish.gif");
-    background-size:cover;
+.bg {
+    background-size: cover;
+    background-color: rgb(0, 0, 124); /* fallback if image fails */
 }
 
-marquee{
+.black-bg {
+    background-image: none !important;
+    background-color: black !important;
+}
+
+marquee {
     height:100vh;
 }
 
-.center{
+.center {
     display:flex;
     justify-content:center;
 }
 
-.title{
+.title {
     display:flex;
     justify-content:center;
     background-color:black;
 }
 
-.hover-img{
-    width:200px;
+.hover-img {
+    width: 200px;
     height:auto;
-    transition: transform 0.25s ease;   /* smooth growth */
 }
 
-/* grow + swap image */
-.hover-img:hover{
+/* grow + swap image on hover */
+.hover-img:hover {
+    width: 300px;
     content:url("../cat.png");
-    transform: scale(1.6);   /* change number for bigger/smaller growth */
 }
-

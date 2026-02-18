@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Viewer</title>
+    <script src="js/pageViewerScript.js" type="text/javascript" defer></script>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .header .controls {
+            display: flex;
+            gap: 10px;
+        }
+        .controls button {
+            font-size: 1.2em;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .iframe-container {
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 ratio */
+            position: relative;
+        }
+        .iframe-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Page Viewer</h1>
+        <div class="controls">
+            <button id="prevPage">&larr;</button>
+            <span id="current-viewing">Currently viewing: </span>
+            <button id="nextPage">&rarr;</button>
+        </div>
+    </div>
+
+    <div class="iframe-container">
+        <iframe id="pageIframe" src="html/button.html"></iframe>
+    </div>
+</body>
+</html>
