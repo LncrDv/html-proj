@@ -1,16 +1,17 @@
 var buttonScore = 0;
+
 var upg_buttonMaker = 0;
 var price_buttonMaker = 10 * (1.5**upg_buttonMaker);
 LoadGame();
 
 
-const btnDisplay = document.querySelector("#nb_buttons");
-const makerDisplay = document.querySelector("#nb_btnmakers");
-const priceDisplay = document.querySelector("#price");
+const score_Display = document.querySelector("#nb_score");
+const buttonMaker_Display = document.querySelector("#nb_buttonMakers");
+const buttonMaker_price_Display = document.querySelector("#buttonMakerPrice");
 function UpdateDisplay(){
-    btnDisplay.innerText = Math.floor(buttonScore);
-    makerDisplay.innerText = Math.floor(upg_buttonMaker);
-    priceDisplay.innerText = Math.floor(price_buttonMaker);
+    score_Display.innerText = Math.floor(buttonScore);
+    buttonMaker_Display.innerText = Math.floor(upg_buttonMaker);
+    buttonMaker_price_Display.innerText = Math.floor(price_buttonMaker);
 }
 UpdateDisplay()
 
