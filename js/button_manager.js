@@ -120,7 +120,6 @@ function AddNewButtonGenerator(name)
 {
     buttonsGeneratorsBought.set(name,buttonsGeneratorsBought.get(name)+1);
     buttonGeneratorsObj.get(name).updatePrice();
-    StartButtonMakerTimer();
 }
 function UpdateDisplay(){
     score_Display.innerText = Math.floor(buttonScore);
@@ -132,6 +131,8 @@ function UpdateDisplay(){
 
     buttonMaker_Display.innerText = Math.floor(buttonsGeneratorsBought.get("buttonMaker"));
     buttonMaker_price_Display.innerText = Math.floor(buttonGeneratorsObj.get("buttonMaker").currentPrice);
+    buttonSewer_Display.innerText = Math.floor(buttonsGeneratorsBought.get("buttonSewer"));
+    buttonSewer_price_Display.innerText = Math.floor(buttonGeneratorsObj.get("buttonSewer").currentPrice);
     buttonFarm_Display.innerText = Math.floor(buttonsGeneratorsBought.get("buttonFarm"));
     buttonFarm_price_Display.innerText = Math.floor(buttonGeneratorsObj.get("buttonFarm").currentPrice);
     // blabla_Display.innerText = Math.floor(buttonsGeneratorsBought.get("blabla"));
@@ -146,10 +147,13 @@ let cps_display;
 
 let buttonMaker_Display;
 let buttonMaker_price_Display;
+let buttonSewer_Display;
+let buttonSewer_price_Display;
 let buttonFarm_Display;
 let buttonFarm_price_Display;
 //let blabla_Display;
 //let blabla_price_Display;
+
 
 
 
@@ -160,6 +164,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     buttonMaker_Display = document.querySelector("#nb_buttonMaker");
     buttonMaker_price_Display = document.querySelector("#price_buttonMaker");
+    buttonSewer_Display = document.querySelector("#nb_buttonSewer");
+    buttonSewer_price_Display = document.querySelector("#price_buttonSewer");
     buttonFarm_Display = document.querySelector("#nb_buttonFarm");
     buttonFarm_price_Display = document.querySelector("#price_buttonFarm");
     //  blabla_Display = document.querySelector("#nb_blabla");
@@ -168,9 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
     
 
     LoadGame();
-    StartButtonMakerTimer();
-    StartButtonFarmTimer();
-    //StartBlablaTimer();
 
     UpdateDisplay();
 });
@@ -178,6 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
 //Ou les données des obj seront stockées
 const buttonGeneratorsObj = new Map();
 buttonGeneratorsObj.set("buttonMaker",(new ButtonGenerator("buttonMaker", 15, 0.1)));
+buttonGeneratorsObj.set("buttonSewer",(new ButtonGenerator("buttonSewer", 100, 1)));
 buttonGeneratorsObj.set("buttonFarm",(new ButtonGenerator("buttonFarm", 1100, 8)));
 //buttonGeneratorsObj.set("blabla",(new ButtonGenerator("blabla", prixInitial, cps)));
 
@@ -194,43 +198,22 @@ function BuyButtonGenerator(genName){
 }
 
 //Timers
-var buttonMakerTimer = null;
-var buttonFarmTimer = null;
-//var blablaTimer = null;
-function StartButtonMakerTimer() {
-    if (buttonMakerTimer !== null) {
-        clearInterval(buttonMakerTimer);
-    }
+var updPerSec = 100
+var interval = 1000/ updPerSec
 
-    const cps = buttonGeneratorsObj.get("buttonMaker").cps;
-    var interval = 1000 / (cps * (buttonsGeneratorsBought.get("buttonMaker"))); // cps = clicks per second
+setInterval(() => {
+    let totalCps = 0;
+
+    buttonsGeneratorsBought.forEach((amount, key) => {
+        totalCps += buttonGeneratorsObj.get(key).cps * amount;
+    });
     
+    buttonScore += totalCps / updPerSec; // updPerSec ticks per second
+    UpdateDisplay();
+}, interval);
 
-    buttonMakerTimer = setInterval(() => {
-        if (buttonsGeneratorsBought.get("buttonMaker") >= 0)
-        {
-            buttonScore += 1;
-            UpdateDisplay();
-        }
-    }, interval);
-}
-function StartButtonFarmTimer() {
-    if (buttonFarmTimer !== null) {
-        clearInterval(buttonFarmTimer);
-    }
 
-    const cps = buttonGeneratorsObj.get("buttonFarm").cps;
-    var interval = 1000 / (cps * (buttonsGeneratorsBought.get("buttonFarm"))); // cps = clicks per second
-    
 
-    buttonFarmTimer = setInterval(() => {
-        if (buttonsGeneratorsBought.get("buttonFarm") >= 0)
-        {
-            buttonScore += 1;
-            UpdateDisplay();
-        }
-    }, interval);
-}
 /*
 function StartBlablaTimer() {
     if (blablaTimer !== null) {
@@ -242,7 +225,7 @@ function StartBlablaTimer() {
     
 
     blablaTimer = setInterval(() => {
-        if (buttonsGeneratorsBought.get("blabla") >= 0)
+        if (buttonsGeneratorsBought.get("blabla") > 0)
         {
             buttonScore += 1;
             UpdateDisplay();
@@ -250,6 +233,7 @@ function StartBlablaTimer() {
     }, interval);
 }
 */
+
 setInterval(function() {
     SaveGame();
 }, 1*60);
@@ -259,8 +243,11 @@ function SaveGame() {
     const gameData = {
         _buttonScore: buttonScore,
         _buttonMaker: buttonsGeneratorsBought.get("buttonMaker"),
+        _buttonSewer : buttonsGeneratorsBought.get("buttonSewer"),
         _buttonFarm: buttonsGeneratorsBought.get("buttonFarm")
+        
         //_blabla : buttonsGeneratorsBought.get("blabla")
+        
     };
     localStorage.setItem("buttonGameSave", JSON.stringify(gameData));
 
@@ -271,13 +258,18 @@ function ResetGame() {
     buttonScore = 0;
     buttonsGeneratorsBought = new Map()
     buttonsGeneratorsBought.set("buttonMaker",0);
+    buttonsGeneratorsBought.set("buttonSewer",0);
     buttonsGeneratorsBought.set("buttonFarm",0);
+    
     //buttonsGeneratorsBought.set("blabla",0);
+    
     
     const gameData = {
         _buttonScore: buttonScore,
         _buttonMaker: buttonsGeneratorsBought.get("buttonMaker"),
+        _buttonSewer: buttonsGeneratorsBought.get("buttonSewer"),
         _buttonFarm: buttonsGeneratorsBought.get("buttonFarm")
+        
         //_blabla: buttonsGeneratorsBought.get("blabla",0);
         
     };
@@ -296,15 +288,14 @@ function LoadGame() {
 
     buttonsGeneratorsBought = new Map();
     buttonsGeneratorsBought.set("buttonMaker",parsedData._buttonMaker ?? 0);
+    buttonsGeneratorsBought.set("buttonSewer",parsedData._buttonSewer ?? 0);
     buttonsGeneratorsBought.set("buttonFarm",parsedData._buttonFarm ?? 0);
     //buttonsGeneratorsBought.set("blabla",parsedData.blabla ?? 0);
 
     buttonGeneratorsObj.get("buttonMaker").updatePrice();
+    buttonGeneratorsObj.get("buttonSewer").updatePrice();
     buttonGeneratorsObj.get("buttonFarm").updatePrice();
     //buttonGeneratorsObj.get("blabla").updatePrice();
-    StartButtonMakerTimer();
-    StartButtonFarmTimer();
-    //StartBlablaTimer();
     UpdateDisplay();
 }
 
