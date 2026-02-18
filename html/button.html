@@ -1,40 +1,68 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Button</title>
-    <link rel="stylesheet" href="../css/button_style.css">
+	<head>
+		<meta charset="utf-8">
+		<title>Button</title>
+		<link rel="stylesheet" href="../css/button_style.css">
 
-    <script src="../js/button_manager.js" type="text/javascript" defer></script>
-    <link rel="icon" type = "image/png" href="../button_logo.png"/>
+		<script src="../js/button_manager.js" type="text/javascript" defer></script>
+		<link rel="icon" type = "image/png" href="../button_logo.png"/>
 
-  </head>
-  <body>
-    <div class="title-container">
-      <div class="text-container">
-        <img src="../button_logo.png" class="logo">
-        <h1 class="buttons">Buttons :</h1>
-        <span id="nb_score" class="btcounter">0</span>
-        <div class="the_button_container">
-          <button id="get_buttons" onClick="AddButtonToScore()" class="btn">Get buttons</button>
-        </div>
-      </div>
-      <div class="button-container">
-        <div class="buffer-container">
-          <div class="btn-makers">
-            <button id="get_btnmakers" onClick="BuyButtonMaker()" class="buffer">Get a button maker</button>
-            <h3 class="buffer">Button makers :</h3>
-            <h3 class="buffer"><span id="nb_buttonMakers" class="counter">0</span></h3>
-            <br/>
-            <h3 class="buffer">Price :</h3>
-            <h3 class="buffer"><span id="buttonMakerPrice" class="counter">0</span></h3>
-          </div>
-        </div>
-        <div class="saveContainer">
-          <button id="saver" onClick="SaveGame()" class="saver">Save game progress</button>
-          <button id="reset" onClick="ResetGame()" class="reseter">Reset everything</button>
-        </div>
-      </div>
-    </div>
-  </body>
+	</head>
+	<body>
+		<div class="title-container">
+			<div class="text-container">
+				<img src="../button_logo.png" class="logo">
+				<h1 class="buttons">Buttons :</h1>
+				<span id="nb_score" class="btcounter">0</span>
+				<div class="the_button_container">
+					<button id="get_buttons" onClick="AddButtonToScore()" class="btn">Get buttons</button>
+				</div>
+				<div class="btcounter" id="cps_display"><p>0/s</p></div>
+				
+			</div>
+			<div class="button-container">
+				<div class="buffer-container">
+					<div class="btn-makers">
+						<ul id="upgrades">
+							<!-- <li class="upgrade-item">
+								<div>
+									<button id="get_blablas" onClick="BuyButtonGenerator('blabla')" class="buffer">Get a blabla </button>
+									<h3 class="buffer">&nbsp;Blablas :&nbsp;</h3>
+									<h3 class="buffer"><span id="nb_blabla" class="counter">0</span></h3>
+									<br/>
+									<h3 class="buffer">&nbsp;Price :&nbsp;</h3>
+									<h3 class="buffer"><span id="price_blabla" class="counter">0</span></h3>
+								</div>
+							</li> -->
+							<li class="upgrade-item">
+								<div>
+									<button id="get_btnmakers" onClick="BuyButtonGenerator('buttonMaker')" class="buffer">Get a button maker</button>
+									<h3 class="buffer">&nbsp;Button makers&nbsp;:&nbsp;</h3>
+									<h3 class="buffer"><span id="nb_buttonMaker" class="counter">0</span></h3>
+									<br/>
+									<h3 class="buffer">&nbsp;Price&nbsp;:&nbsp;</h3>
+									<h3 class="buffer"><span id="price_buttonMaker" class="counter">0</span></h3>
+								</div>
+							</li>
+							<li class="upgrade-item">
+								<div>
+									<button id="get_btnfarms" onClick="BuyButtonGenerator('buttonFarm')" class="buffer">Get a button farm</button>
+									<h3 class="buffer">&nbsp;Button Farms :&nbsp;</h3>
+									<h3 class="buffer"><span id="nb_buttonFarm" class="counter">0</span></h3>
+									<br/>
+									<h3 class="buffer">&nbsp;Price :&nbsp;</h3>
+									<h3 class="buffer"><span id="price_buttonFarm" class="counter">0</span></h3>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="saveContainer">
+					<button id="saver" onClick="SaveGame()" class="saver">Save game progress</button>
+					<button id="reset" onClick="ResetGame()" class="reseter">Reset everything</button>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>
