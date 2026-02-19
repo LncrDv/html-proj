@@ -1,12 +1,18 @@
-const button = document.querySelector("#cookieCounter");
+const cookieIncreaseButton = document.querySelector("#cookieCounter");
+const cookieDecreaseButton = document.querySelector("#cookieDecrease");
 const counterDisplay = document.querySelector("#counter");
 
 var value = 1
-button.addEventListener("click", () => {
+cookieIncreaseButton.addEventListener("click", () => {
     value += 1;
     UpdateDisplay();
     });
-
+cookieDecreaseButton.addEventListener("click", () => {
+    if (value > 10) {
+        value -= 10;
+        UpdateDisplay();
+    }
+    });
 function UpdateDisplay() {
     counterDisplay.innerText = value;
     document.querySelector("#ingredient1").textContent = 30*value;
