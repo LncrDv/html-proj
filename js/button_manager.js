@@ -145,22 +145,33 @@ function AddNewButtonGenerator(name) {
     playClickSound(); // play sound when buying an upgrade
 }
 
+function formatNumber(num) {
+    if (num < 1000) return Math.floor(num);
+    const units = ["K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "UnDc", "DuoDc", "TDc"];
+    let unitIndex = -1;
+    while (num >= 1000 && unitIndex < units.length - 1) {
+        num /= 1000;
+        unitIndex++;
+    }
+    return num.toFixed(1) + units[unitIndex];
+}
+
 function UpdateDisplay(){
-    score_Display.innerText = Math.floor(buttonScore);
+    score_Display.innerText = formatNumber(buttonScore);
     totalCps = 0;
     buttonsGeneratorsBought.forEach((value, key) => {
         totalCps += buttonGeneratorsObj.get(key).cps * value;
     });
     cps_display.innerText = (Math.fround(totalCps*10)/10+"/s");
 
-    buttonMaker_Display.innerText = Math.floor(buttonsGeneratorsBought.get("buttonMaker"));
-    buttonMaker_price_Display.innerText = Math.floor(buttonGeneratorsObj.get("buttonMaker").currentPrice);
-    buttonSewer_Display.innerText = Math.floor(buttonsGeneratorsBought.get("buttonSewer"));
-    buttonSewer_price_Display.innerText = Math.floor(buttonGeneratorsObj.get("buttonSewer").currentPrice);
-    buttonFarm_Display.innerText = Math.floor(buttonsGeneratorsBought.get("buttonFarm"));
-    buttonFarm_price_Display.innerText = Math.floor(buttonGeneratorsObj.get("buttonFarm").currentPrice);
-    //blabla_Display.innerText = Math.floor(buttonsGeneratorsBought.get("blabla"));
-    //blabla_price_Display.innerText = Math.floor(buttonGeneratorsObj.get("blabla").currentPrice);
+    buttonMaker_Display.innerText = formatNumber(buttonsGeneratorsBought.get("buttonMaker"));
+    buttonMaker_price_Display.innerText = formatNumber(buttonGeneratorsObj.get("buttonMaker").currentPrice);
+    buttonSewer_Display.innerText = formatNumber(buttonsGeneratorsBought.get("buttonSewer"));
+    buttonSewer_price_Display.innerText = formatNumber(buttonGeneratorsObj.get("buttonSewer").currentPrice);
+    buttonFarm_Display.innerText = formatNumber(buttonsGeneratorsBought.get("buttonFarm"));
+    buttonFarm_price_Display.innerText = formatNumber(buttonGeneratorsObj.get("buttonFarm").currentPrice);
+    //blabla_Display.innerText = formatNumber(buttonsGeneratorsBought.get("blabla"));
+    //blabla_price_Display.innerText = formatNumber(buttonGeneratorsObj.get("blabla").currentPrice);
 }
 
 // ---------- DISPLAY ELEMENTS ----------
