@@ -144,8 +144,12 @@ function AddNewButtonGenerator(name) {
     buttonGeneratorsObj.get(name).updatePrice();
     playClickSound(); // play sound when buying an upgrade
 }
-
-function formatNumber(num) {
+function InitializeGeneratorsBought() {
+    buttonGeneratorsObj.forEach(element => {
+        buttonGeneratorsBought.set(element.name, 0);
+    });
+}
+function FormatNumber(num) {
     if (num < 1000) return Math.floor(num);
     const units = ["K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "UnDc", "DuoDc", "TDc"];
     let unitIndex = -1;
@@ -157,19 +161,19 @@ function formatNumber(num) {
 }
 
 function UpdateDisplay(){
-    score_Display.innerText = formatNumber(buttonScore);
+    score_Display.innerText = FormatNumber(buttonScore);
     totalCps = 0;
     buttonsGeneratorsBought.forEach((value, key) => {
         totalCps += buttonGeneratorsObj.get(key).cps * value;
     });
     cps_display.innerText = (Math.fround(totalCps*10)/10+"/s");
 
-    buttonMaker_Display.innerText = formatNumber(buttonsGeneratorsBought.get("buttonMaker"));
-    buttonMaker_price_Display.innerText = formatNumber(buttonGeneratorsObj.get("buttonMaker").currentPrice);
-    buttonSewer_Display.innerText = formatNumber(buttonsGeneratorsBought.get("buttonSewer"));
-    buttonSewer_price_Display.innerText = formatNumber(buttonGeneratorsObj.get("buttonSewer").currentPrice);
-    buttonFarm_Display.innerText = formatNumber(buttonsGeneratorsBought.get("buttonFarm"));
-    buttonFarm_price_Display.innerText = formatNumber(buttonGeneratorsObj.get("buttonFarm").currentPrice);
+    buttonMaker_Display.innerText = FormatNumber(buttonsGeneratorsBought.get("buttonMaker"));
+    buttonMaker_price_Display.innerText = FormatNumber(buttonGeneratorsObj.get("buttonMaker").currentPrice);
+    buttonSewer_Display.innerText = FormatNumber(buttonsGeneratorsBought.get("buttonSewer"));
+    buttonSewer_price_Display.innerText = FormatNumber(buttonGeneratorsObj.get("buttonSewer").currentPrice);
+    buttonFarm_Display.innerText = FormatNumber(buttonsGeneratorsBought.get("buttonFarm"));
+    buttonFarm_price_Display.innerText = FormatNumber(buttonGeneratorsObj.get("buttonFarm").currentPrice);
 }
 
 // ---------- DISPLAY ELEMENTS ----------
@@ -199,6 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     LoadGame();
     UpdateDisplay();
+    InitializeGeneratorsBought();
 });
 
 // ---------- GENERATORS DATA ----------
@@ -209,12 +214,8 @@ buttonGeneratorsObj.set("buttonFarm",(new ButtonGenerator("buttonFarm", 1100, 8)
 //buttonGeneratorsObj.set("blabla",(new ButtonGenerator("blabla", prixInit, cps)));
 
 let buttonsGeneratorsBought = new Map();
-function InitializeGeneratorsBought() {
-    buttonGeneratorsObj.forEach(element => {
-        buttonGeneratorsBought.set(element.name, 0);
-    });
-}
-InitializeGeneratorsBought();
+
+
 
 // ---------- CLICK HANDLERS ----------
 function AddButtonToScore(){
