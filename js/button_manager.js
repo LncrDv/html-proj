@@ -19,7 +19,7 @@ J'ai apporté des modifs au code et je vais t'expliquer comment ajouter un nouve
         </div>
     </li>
 
-    en ca (par exemple, change le nom de l'upgrade comme tu veux) : 
+    en ça (par exemple, change le nom de l'upgrade comme tu veux) : 
 
     <li class="upgrade-item">
         <div>
