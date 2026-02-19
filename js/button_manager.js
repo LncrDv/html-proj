@@ -159,6 +159,8 @@ function UpdateDisplay(){
     buttonSewer_price_Display.innerText = Math.floor(buttonGeneratorsObj.get("buttonSewer").currentPrice);
     buttonFarm_Display.innerText = Math.floor(buttonsGeneratorsBought.get("buttonFarm"));
     buttonFarm_price_Display.innerText = Math.floor(buttonGeneratorsObj.get("buttonFarm").currentPrice);
+    //blabla_Display.innerText = Math.floor(buttonsGeneratorsBought.get("blabla"));
+    //blabla_price_Display.innerText = Math.floor(buttonGeneratorsObj.get("blabla").currentPrice);
 }
 
 // ---------- DISPLAY ELEMENTS ----------
@@ -166,6 +168,7 @@ let score_Display, cps_display;
 let buttonMaker_Display, buttonMaker_price_Display;
 let buttonSewer_Display, buttonSewer_price_Display;
 let buttonFarm_Display, buttonFarm_price_Display;
+//let blabla_Display, blabla_price_Display;
 
 document.addEventListener("DOMContentLoaded", () => {
     score_Display = document.querySelector("#nb_score");
@@ -177,6 +180,8 @@ document.addEventListener("DOMContentLoaded", () => {
     buttonSewer_price_Display = document.querySelector("#price_buttonSewer");
     buttonFarm_Display = document.querySelector("#nb_buttonFarm");
     buttonFarm_price_Display = document.querySelector("#price_buttonFarm");
+    //blabla_Display = document.querySelector("#nb_blabla");
+    //blabla_price_Display = document.querySelector("#price_blabla");
 
     // Attach sound to all upgrade buttons
     document.querySelectorAll(".upgrade-item button").forEach(btn => {
@@ -192,11 +197,15 @@ const buttonGeneratorsObj = new Map();
 buttonGeneratorsObj.set("buttonMaker",(new ButtonGenerator("buttonMaker", 15, 0.1)));
 buttonGeneratorsObj.set("buttonSewer",(new ButtonGenerator("buttonSewer", 100, 1)));
 buttonGeneratorsObj.set("buttonFarm",(new ButtonGenerator("buttonFarm", 1100, 8)));
+//buttonGeneratorsObj.set("blabla",(new ButtonGenerator("blabla", prixInit, cps)));
 
 let buttonsGeneratorsBought = new Map();
-buttonsGeneratorsBought.set("buttonMaker", 0);
-buttonsGeneratorsBought.set("buttonSewer", 0);
-buttonsGeneratorsBought.set("buttonFarm", 0);
+function InitializeGeneratorsBought() {
+    buttonGeneratorsObj.forEach(element => {
+        buttonGeneratorsBought.set(element.name, 0);
+    });
+}
+InitializeGeneratorsBought();
 
 // ---------- CLICK HANDLERS ----------
 function AddButtonToScore(){
@@ -236,6 +245,7 @@ function SaveGame() {
         _buttonMaker: buttonsGeneratorsBought.get("buttonMaker"),
         _buttonSewer : buttonsGeneratorsBought.get("buttonSewer"),
         _buttonFarm: buttonsGeneratorsBought.get("buttonFarm")
+        //_blabla: buttonsGeneratorsBought.get("blabla")
     };
     localStorage.setItem("buttonGameSave", JSON.stringify(gameData));
     UpdateDisplay();
@@ -244,9 +254,7 @@ function SaveGame() {
 // ---------- RESET ----------
 function ResetGame() {
     buttonScore = 0;
-    buttonsGeneratorsBought.set("buttonMaker",0);
-    buttonsGeneratorsBought.set("buttonSewer",0);
-    buttonsGeneratorsBought.set("buttonFarm",0);
+    InitializeGeneratorsBought();
     SaveGame();
     UpdateDisplay();
 }
@@ -262,10 +270,12 @@ function LoadGame() {
     buttonsGeneratorsBought.set("buttonMaker", parsedData._buttonMaker ?? 0);
     buttonsGeneratorsBought.set("buttonSewer", parsedData._buttonSewer ?? 0);
     buttonsGeneratorsBought.set("buttonFarm", parsedData._buttonFarm ?? 0);
+    //buttonsGeneratorsBought.set("blabla", parsedData._blabla ?? 0);
 
     buttonGeneratorsObj.get("buttonMaker").updatePrice();
     buttonGeneratorsObj.get("buttonSewer").updatePrice();
     buttonGeneratorsObj.get("buttonFarm").updatePrice();
+    //buttonGeneratorsObj.get("blabla").updatePrice();
 
     UpdateDisplay();
 }
