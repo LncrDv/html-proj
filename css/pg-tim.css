@@ -1,4 +1,25 @@
-body {background-color: bisque;}
+body {
+    background-color: rgb(165, 128, 83);
+    color : rgb(0, 0, 0) ;
+}
 .sassy {
     font-weight: bold ;
  }
+
+#cookieCounter {
+    background-color: black;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+#cookieCounter:hover {
+    background-color: gray;
+}
+
+.step {
+    font-style: italic ;
+    font-weight : bold ;
+}
