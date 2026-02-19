@@ -170,8 +170,6 @@ function UpdateDisplay(){
     buttonSewer_price_Display.innerText = formatNumber(buttonGeneratorsObj.get("buttonSewer").currentPrice);
     buttonFarm_Display.innerText = formatNumber(buttonsGeneratorsBought.get("buttonFarm"));
     buttonFarm_price_Display.innerText = formatNumber(buttonGeneratorsObj.get("buttonFarm").currentPrice);
-    //blabla_Display.innerText = formatNumber(buttonsGeneratorsBought.get("blabla"));
-    //blabla_price_Display.innerText = formatNumber(buttonGeneratorsObj.get("blabla").currentPrice);
 }
 
 // ---------- DISPLAY ELEMENTS ----------
