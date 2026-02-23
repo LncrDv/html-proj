@@ -228,11 +228,24 @@ function UpdateDisplay(){
 
     buttonTimeMachine_Display.innerText = FormatNumber(buttonGeneratorsBought.get("buttonTimeMachine"));
     buttonTimeMachine_price_Display.innerText = FormatNumber(buttonGeneratorsObj.get("buttonTimeMachine").currentPrice);
+
+
+    document.querySelectorAll("#perks button").forEach((button, index) => {
+    const perk = unlockablePerks[index];
+    if (!perk) {
+        button.parentElement.parentElement.style.display = "none";
+        return;
+    };
+    button.parentElement.parentElement.style.display = "";
+    button.textContent = `${perk.name} (${FormatNumber(perk.price)})`;
+    });
+
 }
 
 // ---------- CLICK HANDLERS ----------
+var mouseMultiplier = 1;
 function AddButtonToScore(){
-    buttonScore++;
+    buttonScore += mouseMultiplier;
     playClickSound();
     UpdateDisplay();
 }
@@ -347,7 +360,62 @@ function ResetGame() {
     UpdateDisplay();
     location.reload();
 }
+// ---------- PERKS ---------
+class Perk {
+    constructor(name, price, modifiers) {
+        this.name = name
+        this.price = price
+        this.modifiers = modifiers
+    }
+    applyPerk()
+    {
+        this.modifiers.forEach((value, key) => 
+        {
+            switch(key)
+            {
+                case "mouse":
+                    mouseMultiplier += value;
+                    break;
+                case "timesMouse":
+                    mouseMultiplier *= value;
+                    break;
+                default:
+                    console.log("Undefined modifier : "+key);
+                    break;
 
+            }
+        });
+    }
+}
+allPerks = new Map();
+allPerks.set("Reinforced Index Finger", new Perk("Reinforced Index Finger", 100, new Map([["timesMouse",2]])));
+allPerks.set("Carpal Tunnel Prevention Cream", new Perk("Carpal Tunnel Prevention Cream", 500, new Map([["timesMouse",2]])));
+allPerks.set("Ambidextrous", new Perk("Ambidextrous", 1000, new Map([["timesMouse",2]])));
+allPerks.set("Thousand Fingers", new Perk("Thousand Fingers", 5000, new Map([["timesMouse",2]])));
+allPerks.set("Million Fingers", new Perk("Million Fingers", 100000, new Map([["timesMouse",2]])));
+allPerks.set("Billion Fingers", new Perk("Billion Fingers", 10000000, new Map([["timesMouse",2]])));
+
+unlockablePerks = []
+allPerks.forEach(perk => unlockablePerks.push(perk));
+function BuyPerk(perkNumber)
+{
+    if (perkNumber < 0 || perkNumber >= unlockablePerks.length) return;
+    console.log("Trying to buy perk : "+unlockablePerks[perkNumber].name);
+    if (buttonScore >= unlockablePerks[perkNumber].price)
+    {
+        buttonScore -= unlockablePerks[perkNumber].price;
+        console.log("Bought perk : "+unlockablePerks[perkNumber].name);
+        unlockablePerks[perkNumber].applyPerk();
+
+        allPerks.delete(unlockablePerks[perkNumber].name);
+        unlockablePerks.splice(perkNumber,1);
+        
+        UpdateDisplay();
+        return;
+    }
+    console.log("Not enough button to buy perk : "+unlockablePerks[perkNumber].name);
+
+}
 // ---------- DOM READY ----------
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -390,8 +458,14 @@ document.addEventListener("DOMContentLoaded", () => {
     buttonTimeMachine_Display = document.querySelector("#nb_buttonTimeMachine");
     buttonTimeMachine_price_Display = document.querySelector("#price_buttonTimeMachine");
 
+    perkButtonParent  = document.querySelector("#perks");
+
     document.querySelectorAll(".upgrade-item button").forEach(btn => {
         btn.addEventListener("click", playClickSound);
+    });
+
+    document.querySelectorAll("#perks button").forEach((button, i) => {
+        button.addEventListener("click", () => BuyPerk(i));
     });
 
     // IMPORTANT ORDER
