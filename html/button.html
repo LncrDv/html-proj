@@ -18,7 +18,7 @@
         </div>
 
         <!-- Main clickable button -->
-        <img src="../button_logo.png" type="image/png" alt="button" id="mainButton" class="main-button" unselectable="on" onclick="AddButtonToScore()">
+        <img draggable="false" (dragstart)="false;"  src="../button_logo.png" type="image/png" alt="button" id="mainButton" class="main-button" unselectable="on" onclick="AddButtonToScore()">
 
         <!-- Upgrades to the right -->
         <div class="upgrades-container">

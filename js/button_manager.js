@@ -104,23 +104,39 @@ var buttonScore = 0;
 
 // ---------- AUDIO SETUP ----------
 let clickBuffer;
+
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-let buttonGeneratorsBought = new Map();
+const soundCache = new Map();
 
-fetch('../clickSfx.mp3')
-    .then(response => response.arrayBuffer())
-    .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
-    .then(decodedData => { clickBuffer = decodedData; })
-    .catch(err => console.error("Failed to load click sound:", err));
+async function LoadSFX(sfxName) {
+    if (soundCache.has(sfxName)) {
+        return soundCache.get(sfxName);
+    }
 
-function playClickSound() {
-    if (!clickBuffer) return;
+    const response = await fetch(sfxName);
+    const arrayBuffer = await response.arrayBuffer();
+    const decodedData = await audioContext.decodeAudioData(arrayBuffer);
+
+    soundCache.set(sfxName, decodedData);
+    return decodedData;
+}
+
+async function PlaySound(soundName) {
+
+    if (audioContext.state === "suspended") {
+        await audioContext.resume();
+    }
+
+    const buffer = await LoadSFX(soundName);
+    if (!buffer) return;
+
     const source = audioContext.createBufferSource();
-    source.buffer = clickBuffer;
-    source.playbackRate.value = 0.95 + Math.random() * 0.1;
+    source.buffer = buffer;
     source.connect(audioContext.destination);
     source.start();
 }
+
+let buttonGeneratorsBought = new Map();
 
 // ---------- GENERATOR CLASS ----------
 class ButtonGenerator{
@@ -162,7 +178,7 @@ function InitializeGeneratorsBought() {
 function AddNewButtonGenerator(name) {
     buttonGeneratorsBought.set(name, buttonGeneratorsBought.get(name)+1);
     buttonGeneratorsObj.get(name).updatePrice();
-    playClickSound();
+    PlaySound("../SFX/CookieClicker/buy"+Math.floor(Math.random()*3+1)+".mp3");
 }
 
 function FormatNumber(num) {
@@ -246,7 +262,7 @@ function UpdateDisplay(){
 var mouseMultiplier = 1;
 function AddButtonToScore(){
     buttonScore += mouseMultiplier;
-    playClickSound();
+    PlaySound("../SFX/CookieClicker/clickb"+Math.floor(Math.random()*6+1)+".mp3");
     UpdateDisplay();
 }
 
@@ -461,7 +477,9 @@ document.addEventListener("DOMContentLoaded", () => {
     perkButtonParent  = document.querySelector("#perks");
 
     document.querySelectorAll(".upgrade-item button").forEach(btn => {
-        btn.addEventListener("click", playClickSound);
+        btn.addEventListener("click", () => {
+            PlaySound("../SFX/CookieClicker/buy" + Math.floor(Math.random()*3+1) + ".mp3");
+        });
     });
 
     document.querySelectorAll("#perks button").forEach((button, i) => {
