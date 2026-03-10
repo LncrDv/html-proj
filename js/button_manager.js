@@ -104,23 +104,39 @@ var buttonScore = 0;
 
 // ---------- AUDIO SETUP ----------
 let clickBuffer;
+
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-let buttonGeneratorsBought = new Map();
+const soundCache = new Map();
 
-fetch('../clickSfx.mp3')
-    .then(response => response.arrayBuffer())
-    .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
-    .then(decodedData => { clickBuffer = decodedData; })
-    .catch(err => console.error("Failed to load click sound:", err));
+async function LoadSFX(sfxName) {
+    if (soundCache.has(sfxName)) {
+        return soundCache.get(sfxName);
+    }
 
-function playClickSound() {
-    if (!clickBuffer) return;
+    const response = await fetch(sfxName);
+    const arrayBuffer = await response.arrayBuffer();
+    const decodedData = await audioContext.decodeAudioData(arrayBuffer);
+
+    soundCache.set(sfxName, decodedData);
+    return decodedData;
+}
+
+async function PlaySound(soundName) {
+
+    if (audioContext.state === "suspended") {
+        await audioContext.resume();
+    }
+
+    const buffer = await LoadSFX(soundName);
+    if (!buffer) return;
+
     const source = audioContext.createBufferSource();
-    source.buffer = clickBuffer;
-    source.playbackRate.value = 0.95 + Math.random() * 0.1;
+    source.buffer = buffer;
     source.connect(audioContext.destination);
     source.start();
 }
+
+let buttonGeneratorsBought = new Map();
 
 // ---------- GENERATOR CLASS ----------
 class ButtonGenerator{
@@ -162,7 +178,7 @@ function InitializeGeneratorsBought() {
 function AddNewButtonGenerator(name) {
     buttonGeneratorsBought.set(name, buttonGeneratorsBought.get(name)+1);
     buttonGeneratorsObj.get(name).updatePrice();
-    playClickSound();
+    PlaySound("../SFX/CookieClicker/buy"+Math.floor(Math.random()*3+1)+".mp3");
 }
 
 function FormatNumber(num) {
@@ -228,12 +244,25 @@ function UpdateDisplay(){
 
     buttonTimeMachine_Display.innerText = FormatNumber(buttonGeneratorsBought.get("buttonTimeMachine"));
     buttonTimeMachine_price_Display.innerText = FormatNumber(buttonGeneratorsObj.get("buttonTimeMachine").currentPrice);
+
+
+    document.querySelectorAll("#perks button").forEach((button, index) => {
+    const perk = unlockablePerks[index];
+    if (!perk) {
+        button.parentElement.parentElement.style.display = "none";
+        return;
+    };
+    button.parentElement.parentElement.style.display = "";
+    button.textContent = `${perk.name} (${FormatNumber(perk.price)})`;
+    });
+
 }
 
 // ---------- CLICK HANDLERS ----------
+var mouseMultiplier = 1;
 function AddButtonToScore(){
-    buttonScore++;
-    playClickSound();
+    buttonScore += mouseMultiplier;
+    PlaySound("../SFX/CookieClicker/clickb"+Math.floor(Math.random()*6+1)+".mp3");
     UpdateDisplay();
 }
 
@@ -347,7 +376,62 @@ function ResetGame() {
     UpdateDisplay();
     location.reload();
 }
+// ---------- PERKS ---------
+class Perk {
+    constructor(name, price, modifiers) {
+        this.name = name
+        this.price = price
+        this.modifiers = modifiers
+    }
+    applyPerk()
+    {
+        this.modifiers.forEach((value, key) => 
+        {
+            switch(key)
+            {
+                case "mouse":
+                    mouseMultiplier += value;
+                    break;
+                case "timesMouse":
+                    mouseMultiplier *= value;
+                    break;
+                default:
+                    console.log("Undefined modifier : "+key);
+                    break;
 
+            }
+        });
+    }
+}
+allPerks = new Map();
+allPerks.set("Reinforced Index Finger", new Perk("Reinforced Index Finger", 100, new Map([["timesMouse",2]])));
+allPerks.set("Carpal Tunnel Prevention Cream", new Perk("Carpal Tunnel Prevention Cream", 500, new Map([["timesMouse",2]])));
+allPerks.set("Ambidextrous", new Perk("Ambidextrous", 1000, new Map([["timesMouse",2]])));
+allPerks.set("Thousand Fingers", new Perk("Thousand Fingers", 5000, new Map([["timesMouse",2]])));
+allPerks.set("Million Fingers", new Perk("Million Fingers", 100000, new Map([["timesMouse",2]])));
+allPerks.set("Billion Fingers", new Perk("Billion Fingers", 10000000, new Map([["timesMouse",2]])));
+
+unlockablePerks = []
+allPerks.forEach(perk => unlockablePerks.push(perk));
+function BuyPerk(perkNumber)
+{
+    if (perkNumber < 0 || perkNumber >= unlockablePerks.length) return;
+    console.log("Trying to buy perk : "+unlockablePerks[perkNumber].name);
+    if (buttonScore >= unlockablePerks[perkNumber].price)
+    {
+        buttonScore -= unlockablePerks[perkNumber].price;
+        console.log("Bought perk : "+unlockablePerks[perkNumber].name);
+        unlockablePerks[perkNumber].applyPerk();
+
+        allPerks.delete(unlockablePerks[perkNumber].name);
+        unlockablePerks.splice(perkNumber,1);
+        
+        UpdateDisplay();
+        return;
+    }
+    console.log("Not enough button to buy perk : "+unlockablePerks[perkNumber].name);
+
+}
 // ---------- DOM READY ----------
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -390,8 +474,16 @@ document.addEventListener("DOMContentLoaded", () => {
     buttonTimeMachine_Display = document.querySelector("#nb_buttonTimeMachine");
     buttonTimeMachine_price_Display = document.querySelector("#price_buttonTimeMachine");
 
+    perkButtonParent  = document.querySelector("#perks");
+
     document.querySelectorAll(".upgrade-item button").forEach(btn => {
-        btn.addEventListener("click", playClickSound);
+        btn.addEventListener("click", () => {
+            PlaySound("../SFX/CookieClicker/buy" + Math.floor(Math.random()*3+1) + ".mp3");
+        });
+    });
+
+    document.querySelectorAll("#perks button").forEach((button, i) => {
+        button.addEventListener("click", () => BuyPerk(i));
     });
 
     // IMPORTANT ORDER
