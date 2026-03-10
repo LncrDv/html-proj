@@ -28,3 +28,4 @@ function UpdateDisplay() {
     document.querySelector("#ingredient8").textContent = 1*value;
     document.querySelector("#ingredient9").textContent = 20*value;
 }
+
