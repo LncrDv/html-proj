@@ -1,4 +1,4 @@
-const cookieIncreaseButton = document.querySelector("#cookieCounter");
+const cookieIncreaseButton = document.querySelector("#cookieIncrease");
 const cookieDecreaseButton = document.querySelector("#cookieDecrease");
 const counterDisplay = document.querySelector("#counter");
 var value_incremented = 1
@@ -28,4 +28,3 @@ function UpdateDisplay() {
     document.querySelector("#ingredient8").textContent = 1*value;
     document.querySelector("#ingredient9").textContent = 20*value;
 }
-

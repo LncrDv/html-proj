@@ -6,7 +6,8 @@ body {
     font-weight: bold ;
  }
 
-#cookieCounter {
+
+.cookieCounter {
     background-color: black;
     color: white;
     padding: 10px 20px;
@@ -15,15 +16,53 @@ body {
     cursor: pointer;
 }
 
-#cookieDecrease {
-    background-color: black;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
+.cookieCounter:hover {
+    background: linear-gradient(
+        45deg,
+        red,
+        #ff2000,
+        #ff4000,
+        orange,
+        #ff9a00,
+        #ffbf00,
+        yellow,
+        #d4ff00,
+        #aaff00,
+        lime,
+        #55ff00,
+        #00ff55,
+        #00ff88,
+        #00ffaa,
+        #00ccff,
+        #0099ff,
+        #0066ff,
+        #3300ff,
+        #6600ff,
+        #9900ff,
+        #cc00ff,
+        #ff00ff,
+        #ff0099,
+        #ff0066,
+        red,
+        #ff2000,
+        #ff4000,
+        orange,
+        #ff9a00,
+        #ffbf00,
+        yellow,
+        #d4ff00,
+        #aaff00,
+        lime,
+        #55ff00
+    );
+    background-size: 400%;
+    animation: rainbow 0.75s linear infinite;
 }
 
+@keyframes rainbow {
+    0% { background-position: 0%; }
+    100% { background-position: 100%; }
+}
 #cookieCounter:hover {
     background-color: gray;
 }
