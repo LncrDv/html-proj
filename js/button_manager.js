@@ -102,6 +102,22 @@ Si jamais des modifs seraient apportées, merci de aussi modifier les exemples d
 
 var buttonScore = 0;
 
+// ---------- Send Mails -----------
+
+function sendData() {
+    const mailAdress = document.getElementById("mailAdress").value;
+
+    fetch('/call-function', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mailAdress: mailAdress })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("output").innerText = data.result;
+    });
+}
+
 // ---------- AUDIO SETUP ----------
 let clickBuffer;
 
@@ -207,7 +223,7 @@ function UpdateDisplay(){
         totalCps += buttonGeneratorsObj.get(key).cps * value;
     });
 
-    cps_display.innerText = (Math.fround(totalCps*10)/10+"/s");
+    cps_display.innerText = FormatNumber(Math.fround(totalCps*10)/10)+"/s";
 
     buttonMaker_Display.innerText = FormatNumber(buttonGeneratorsBought.get("buttonMaker"));
     buttonMaker_price_Display.innerText = FormatNumber(buttonGeneratorsObj.get("buttonMaker").currentPrice);
