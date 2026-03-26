@@ -1,6 +1,10 @@
 from email.mime.multipart import MIMEMultipart
 import smtplib
 from email.mime.text import MIMEText
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
 def SendMsg(mailAdress,button_url,button_text,sender_password):
     sender_email = "emailsender19.noreply@gmail.com"
     try:
@@ -30,18 +34,23 @@ def SendMsg(mailAdress,button_url,button_text,sender_password):
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
             server.login(sender_email, sender_password)
             server.sendmail(sender_email, mailAdress, msg.as_string())
-
-        print("Email sent successfully!")
+        result = "Email sent successfully!"
+        return result
 
     except smtplib.SMTPAuthenticationError:
         print("Authentication failed. Check your email and password.")
     except Exception as e:
         print(f"Error sending email: {e}")
-# à modifier pour accepter l'adresse qu'on veut
-if __name__ == "__main__":
-    SendMsg(
+@app.route('/call-function', methods=['POST'])
+def call_function():
+    data = request.json
+    result = SendMsg(
         sender_password="yolxglwpllhmzxpa",
-        mailAdress="matop1850@gmail.com",
+        mailAdress=data['mailAdress'],
         button_text="Click Here",
         button_url="http://serveurnsiphp.local/eleves/mathis/mainHtml.html"
     )
+    return jsonify({"result": result})
+
+if __name__ == '__main__':
+    app.run(debug=True)
