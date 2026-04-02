@@ -69,10 +69,10 @@ const GIFS = [
 ];
 
 const CONFIG = {
-  count:    25,
+  count:    40,
   size:     128,
   minSpeed: 0.25,
-  maxSpeed: 1,
+  maxSpeed: 1.5,
 };
 
 function randSpeed() {
@@ -80,49 +80,56 @@ function randSpeed() {
          * (Math.random() < 0.5 ? 1 : -1);
 }
 
-const wrap = document.querySelector('.bottom-goober');
+const gooberHolder = document.querySelector('.bottom-goober');
 
 for (let i = 0; i < CONFIG.count; i++) {
   const gif = GIFS[i % GIFS.length];
-  const img = document.createElement('img');
-  img.src    = gif.src;
-  img.width  = CONFIG.size;
-  img.height = CONFIG.size;
-  img.style.cssText = 'position:absolute;bottom:0;display:block;';
-  wrap.appendChild(img);
+  const newImage = document.createElement('img');
+  newImage.src    = gif.src;
+  newImage.width  = CONFIG.size;
+  newImage.height = CONFIG.size;
+  newImage.style.cssText = 'position:absolute;bottom:0;display:block;';
+  gooberHolder.appendChild(newImage);
 
-  const g = {
-    el:   img,
+  const newGoober = {
+    el:   newImage,
     idle: gif.idle,
     x:    (i / CONFIG.count) * 80 + 2,
     vx:   gif.idle ? 0 : randSpeed(),
-    bobT: Math.random() * Math.PI * 2,
+    bobTimer: Math.random() * Math.PI * 2,
   };
 
-  (function(g) {
+  (function(goober) {
     let last = null;
-    function tick(ts) {
-      if (!last) last = ts;
-      const dt = Math.min((ts - last) / 16.67, 3);
-      last = ts;
+    function tick(tickSpeed) {
+      if (!last) last = tickSpeed;
+      const dt = Math.min((tickSpeed - last) / 16.67, 3);
+      last = tickSpeed;
 
-      if (!g.idle) {
-        g.bobT += 0.07 * dt;
-        g.x    += g.vx * dt;
+      if (!goober.idle) {
+        goober.bobTimer += 0.07 * dt;
+        goober.x    += goober.vx * dt;
 
-        const W = wrap.offsetWidth;
-        if (g.x < 0)                       { g.x = 0;                              g.vx =  Math.abs(g.vx); }
-        if ((g.x/100)*W + CONFIG.size > W) { g.x = ((W - CONFIG.size) / W) * 100; g.vx = -Math.abs(g.vx); }
+        const WIDTH = gooberHolder.offsetWidth;
+        if (goober.x < 0)
+        {
+            goober.x = 0;
+            goober.vx =  Math.abs(goober.vx);
+        }
+        if ((goober.x/100)*WIDTH + CONFIG.size > WIDTH)
+        {
+            goober.x = ((WIDTH - CONFIG.size) / WIDTH) * 100; goober.vx = -Math.abs(goober.vx);
+        }
 
-        g.el.style.left      = g.x + '%';
-        g.el.style.bottom    = (Math.sin(g.bobT) * 4) + 'px';
-        g.el.style.transform = g.vx < 0 ? 'scaleX(-1)' : 'scaleX(1)';
+        goober.el.style.left      = goober.x + '%';
+        goober.el.style.bottom    = (Math.sin(goober.bobTimer) * 4) + 'px';
+        goober.el.style.transform = goober.vx < 0 ? 'scaleX(-1)' : 'scaleX(1)';
       }
 
       requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
-  })(g);
+  })(newGoober);
 }
 </script>
 </body>
