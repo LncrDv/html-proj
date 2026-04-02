@@ -39,7 +39,7 @@ marquee {
 /* grow + swap image on hover */
 .hover-img:hover {
     width: 300px;
-    content:url("../cat.png");
+    content:url("../textures/cat.png");
 }
 .bottom-goober {
     position: fixed;
