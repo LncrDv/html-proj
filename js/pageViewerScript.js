@@ -1,8 +1,8 @@
 // List of pages to cycle through
 const allPages = [
-    "../html/button.html",
-    "../html/page_sacha.html",
-    "../html/Cookie_reci_pee.html"
+    "html/button.html",
+    "html/page_sacha.html",
+    "html/Cookie_reci_pee.html"
 ];
 
 let currentIndex = 0;

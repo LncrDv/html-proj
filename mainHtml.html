@@ -32,7 +32,7 @@
         }
         .iframe-container {
             width: 100%;
-            padding-bottom: 56.25%; /* 16:9 ratio */
+            padding-bottom: 56.25%;
             position: relative;
         }
         .iframe-container iframe {
@@ -58,5 +58,79 @@
     <div class="iframe-container">
         <iframe id="pageIframe" src="html/button.html"></iframe>
     </div>
+    <div class="bottom-goober" style="position:fixed;bottom:0;left:0;width:100%;height:128px;"></div>
+
+<script>
+const GIFS = [
+  { src: 'textures/squareGooberRun.gif',  idle: false },
+  { src: 'textures/circleGooberRun.gif',  idle: false },
+  { src: 'textures/scaredGooberRun.gif',  idle: false },
+  { src: 'textures/circleGooberIdle.gif', idle: true  },
+];
+
+const CONFIG = {
+  count:    40,
+  size:     128,
+  minSpeed: 0.25,
+  maxSpeed: 1.5,
+};
+
+function randSpeed() {
+  return (Math.random() * (CONFIG.maxSpeed - CONFIG.minSpeed) + CONFIG.minSpeed)
+         * (Math.random() < 0.5 ? 1 : -1);
+}
+
+const gooberHolder = document.querySelector('.bottom-goober');
+
+for (let i = 0; i < CONFIG.count; i++) {
+  const gif = GIFS[i % GIFS.length];
+  const newImage = document.createElement('img');
+  newImage.src    = gif.src;
+  newImage.width  = CONFIG.size;
+  newImage.height = CONFIG.size;
+  newImage.style.cssText = 'position:absolute;bottom:0;display:block;';
+  gooberHolder.appendChild(newImage);
+
+  const newGoober = {
+    el:   newImage,
+    idle: gif.idle,
+    x:    (i / CONFIG.count) * 80 + 2,
+    vx:   gif.idle ? 0 : randSpeed(),
+    bobTimer: Math.random() * Math.PI * 2,
+  };
+
+  (function(goober) {
+    let last = null;
+    function tick(tickSpeed) {
+      if (!last) last = tickSpeed;
+      const dt = Math.min((tickSpeed - last) / 16.67, 3);
+      last = tickSpeed;
+
+      if (!goober.idle) {
+        goober.bobTimer += 0.07 * dt;
+        goober.x    += goober.vx * dt;
+
+        const WIDTH = gooberHolder.offsetWidth;
+        if (goober.x < 0)
+        {
+            goober.x = 0;
+            goober.vx =  Math.abs(goober.vx);
+        }
+        if ((goober.x/100)*WIDTH + CONFIG.size > WIDTH)
+        {
+            goober.x = ((WIDTH - CONFIG.size) / WIDTH) * 100; goober.vx = -Math.abs(goober.vx);
+        }
+
+        goober.el.style.left      = goober.x + '%';
+        goober.el.style.bottom    = (Math.sin(goober.bobTimer) * 4) + 'px';
+        goober.el.style.transform = goober.vx < 0 ? 'scaleX(-1)' : 'scaleX(1)';
+      }
+
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  })(newGoober);
+}
+</script>
 </body>
 </html>
