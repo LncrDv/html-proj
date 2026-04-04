@@ -1,14 +1,23 @@
 <!DOCTYPE html>
+<html>
     <head>
         <meta charset="utf-8">
         <link rel="stylesheet" href="../../css/page-dating_sim.css">
-        
         <title>Dating Sim</title>
     </head>
     <body>
-        
         <div class="title"><h1>Dating Sim</h1></div>
-        <div class="title" id="gooberIntro"><img src="../../textures/goober.png" alt="Gooby"></div>
+
+        <div id="gooberIntro"><img src="../../textures/goober.png" alt="Gooby"></div>
+
+        <div class="textBoxObject" id="gooberIntroText">
+            <p id="textInput"></p>
+            <div>
+                <button class="choice-btn">First Choice</button>
+                <button class="choice-btn">Second Choice</button>
+                <button class="choice-btn">Third Choice</button>
+            </div>
+        </div>
 
         <script src="../../js/datingSim.js"></script>
     </body>

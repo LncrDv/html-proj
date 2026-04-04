@@ -1,18 +1,44 @@
-.title
-{
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    margin-top: 50px;
-    
-}
-body
-{
-
+body {
     background-image: url("../textures/classroom.jpg");
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: 100vw 100vh;
-    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
 
+.title {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: 50px;
+}
+
+#gooberIntro {
+    position: fixed;
+    bottom: 200px; /* sits just above the textbox */
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    z-index: 10;
+}
+
+.textBoxObject {
+    font-family: serif;
+    font-size: x-large;
+    background-color: #f4a0c8;
+    height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9;
+    padding: 20px;
+}
+
+.choice-btn {
+    margin: 5px;
 }
