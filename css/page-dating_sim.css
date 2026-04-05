@@ -42,3 +42,15 @@ body {
 .choice-btn {
     margin: 5px;
 }
+#gooberIntro.glitching {
+    filter: hue-rotate(90deg) saturate(3) contrast(1.5);
+    animation: spriteGlitch 0.15s infinite;
+}
+
+@keyframes spriteGlitch {
+    0%   { transform: translateX(-50%) translate(2px, -1px); }
+    25%  { transform: translateX(-50%) translate(-3px, 2px); clip-path: inset(10% 0 40% 0); }
+    50%  { transform: translateX(-50%) translate(1px, 3px);  filter: hue-rotate(180deg) saturate(5); }
+    75%  { transform: translateX(-50%) translate(-1px, -2px); clip-path: inset(60% 0 5% 0); }
+    100% { transform: translateX(-50%) translate(0, 0); }
+}

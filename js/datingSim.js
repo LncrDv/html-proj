@@ -11,13 +11,24 @@ var textQueue = [];
 var dayLog = [];
 var allDaysLog = [];
 
-// 🔴 NEW: hidden NSFW unlock
-function checkNSFWUnlock(nodeId) {
-    if (relationPoints <= 0 && nodeId === "day2_main_intro") {
-        nsfwMode = true;
+// ---- NSFW alternating unlock ----
+function markGameComplete() {
+    localStorage.setItem("gooberCompleted", "true");
+}
+
+function loadNSFWState() {
+    var completed = localStorage.getItem("gooberCompleted") === "true";
+    var wasNSFW = localStorage.getItem("gooberWasNSFW") === "true";
+
+    if (completed) {
+        nsfwMode = !wasNSFW;
+        localStorage.setItem("gooberWasNSFW", nsfwMode ? "true" : "false");
+    } else {
+        nsfwMode = false;
     }
 }
 
+// ---- Save / Load ----
 function saveGame() {
     var saveData = {
         currentNode: currentNode,
@@ -52,6 +63,7 @@ function showSaveNotification(msg) {
     setTimeout(function () { notif.style.opacity = "0"; }, 2000);
 }
 
+// ---- Day logging ----
 function startNewDay() {
     if (dayLog.length > 0) {
         allDaysLog.push(dayLog);
@@ -176,9 +188,20 @@ function applyCustomTags(text) {
     return text;
 }
 
+// ---- Runtime node resolution ----
+// Evaluates any field that may be a function (for nsfwMode branching)
+function resolveNode(raw) {
+    return {
+        text:          typeof raw.text          === "function" ? raw.text()          : raw.text,
+        next:          typeof raw.next          === "function" ? raw.next()          : raw.next,
+        choices:       typeof raw.choices       === "function" ? raw.choices()       : raw.choices,
+        relationPoints: raw.relationPoints
+    };
+}
+
 // ---- Dialogue ----
 function showNextChunk() {
-    var node = dialogueTree[currentNode];
+    var node = resolveNode(dialogueTree[currentNode]);
 
     var chunk = textQueue.shift();
     var cleanText = applyCustomTags(chunk);
@@ -207,15 +230,27 @@ function showNextChunk() {
 }
 
 function goToNode(nodeId) {
+    if (nodeId === null || nodeId === undefined) return;
 
-    checkNSFWUnlock(nodeId); // 🔴 NEW
-
+    // Day boundary logging
     if (nodeId === "day2_main_intro") startNewDay();
+    if (nodeId === "day3_main_intro") startNewDay();
+    if (nodeId === "day4_main_intro") startNewDay();
+    if (nodeId === "day5_main_intro") startNewDay();
+    if (nodeId === "day6_main_intro") startNewDay();
+    if (nodeId === "day7_main_intro") startNewDay();
+
+    // Effects
     if (nodeId.includes("glitch")) triggerGlitch(3);
-    if (nodeId === "day5_nsfw_end") fakeCrash();
+    if (nodeId === "day7_nsfw_end" && nsfwMode) fakeCrash();
+
+    // Mark completion at ending nodes
+    if (nodeId === "post_game_sfw" || nodeId === "post_game_nsfw_leave") {
+        markGameComplete();
+    }
 
     currentNode = nodeId;
-    var node = dialogueTree[nodeId];
+    var node = resolveNode(dialogueTree[nodeId]);
 
     textQueue = node.text.split("[np]");
 
@@ -236,7 +271,7 @@ function advanceDialogue() {
         return;
     }
 
-    var node = dialogueTree[currentNode];
+    var node = resolveNode(dialogueTree[currentNode]);
     if (!node.choices && node.next) {
         goToNode(node.next);
     }
@@ -254,7 +289,6 @@ document.addEventListener("keydown", function (e) {
 
 function triggerGlitch(intensity = 1) {
     document.body.classList.add("glitch");
-
     setTimeout(() => {
         document.body.classList.remove("glitch");
     }, 200 * intensity);
@@ -262,9 +296,11 @@ function triggerGlitch(intensity = 1) {
 
 function fakeCrash() {
     textInput.innerHTML = "ERROR: connection lost.";
-
     setTimeout(() => {
         document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:20%;'>Session terminated</h1>";
     }, 2000);
 }
+
+// ---- Boot ----
+loadNSFWState();
 goToNode(currentNode);
