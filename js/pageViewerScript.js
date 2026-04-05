@@ -2,7 +2,8 @@
 const allPages = [
     "html/button.html",
     "html/page_sacha.html",
-    "html/Cookie_reci_pee.html"
+    "html/Cookie_reci_pee.html",
+    "html/datingSim/ds_intro.html",
 ];
 
 let currentIndex = 0;
