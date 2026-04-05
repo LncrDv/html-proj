@@ -1,337 +1,270 @@
-// --- Dialogue Tree ---
+// =============================================================
+// DATING SIM ENGINE
+// =============================================================
 
 var relationPoints = 0;
+var nsfwMode = false;
+var currentNode = "day1_main_intro";
 
-var dialogueTree = {
-    start: {
-        text: "Hello there! I'm Goober !",
-        choices: null,
-        next: "line1",
-    },
-    line1: {
-        text: "So... what kind of person are you?",
-        choices: [
-            { label: "Adventurous", next: "path_adventurous" },
-            { label: "Silly", next: "path_silly" }
-        ]
-    },
+var textQueue = [];
 
-    // --- Adventurous branch ---
-    path_adventurous: {
-        text: "Wow, I love that! So where should we go first?",
-        choices: [
-            { label: "Forest", next: "main_beforeActivity" },
-            { label: "Basketball court", next: "main_beforeActivity" }
-        ]
-    },
-    main_beforeActivity: {
-        text: "Nah that's boring.",
-        choices: null,
-        next: "main_goToActivity"
-    },
+var dayLog = [];
+var allDaysLog = [];
 
-    // --- Silly branch ---
-    path_silly: {
-        text: "No way ! I love being silly too!",
-        choices: null,
-        next: "main_goToActivity",
-        relationPoints: 1
-    },
+// 🔴 NEW: hidden NSFW unlock
+function checkNSFWUnlock(nodeId) {
+    if (relationPoints <= 0 && nodeId === "day2_main_intro") {
+        nsfwMode = true;
+    }
+}
 
-    // --- Main Branch ---
-    main_goToActivity: {
-        text: "We should totally go burn a forest down and shoplift together!",
-        choices: null,
-        next: "main_goToActivity2"
-    },
-    main_goToActivity2: {
-        text: "<hide><i>You hear the sound of police sirens in the distance. Maybe you should get out of here...</i>",
-        choices: null,
-        next: "main_backToSchool"
-    },
-    main_backToSchool: {
-        text: "Wow ! We had so much fun together ! I wish we could do this every day !",
-        choices: null,
-        next: "main_backToSchool2"
-    },
-    main_backToSchool2: {
-        text: "<hide><i>You wish to never do that ever again.</i>",
-        choices: null,
-        next: "main_backToSchool3"
-    },
-    main_backToSchool3: {
-        text: "<hide><i>So, what do you want to do next ?</i>",
-        choices: [
-            { label: "Go to the movies", next: "path_goToMovies" },
-            { label: "Play video games", next: "path_playVideoGames" },
-            { label: "Kill a local citizen", next: "path_killCitizen" }
-        ]
-    },
-    path_goToMovies: {
-        text: "Sure ! I love movies !",
-        choices: null,
-        next: "path_goToMovies2"
-    },
-    path_goToMovies2: {
-        text: "<hide><i>You and Goober watch a movie together. It was pretty fun, but you can't help but feel like something is missing...</i>",
-        choices: null,
-        next: "path_goToMovies3"
-    },
-    path_goToMovies3: {
-        text: "Wow ! That was so much fun ! Even though I already watched it, it's still fun to see it again. You up doing something else ?",
-        choices: null,
-        next: "main_backToSchool3"
-    },
-    path_playVideoGames: {
-        text: "Yay ! I love video games !",
-        choices: null,
-        next: "path_playVideoGames2"
-    },
-    path_playVideoGames2: {
-        text: "<hide><i>You and Goober play video games together. It was pretty fun, but you can't help but feel like something is missing...</i>",
-        choices: null,
-        next: "path_playVideoGames3"
-    },
-    path_playVideoGames3: {
-        text: "Wow ! That was so much fun ! You suck at smash tho. You up doing something else ?",
-        choices: null,
-        next: "main_backToSchool3"
-    },
-    path_killCitizen: {
-        text: "Yay ! Finally someone who gets me ! Let's go do some crime together !",
-        choices: null,
-        next: "path_killCitizen2"
-    },
-    path_killCitizen2: {
-        text: "<hide><i>You and Goober go out and kill a local citizen together. You feel a sense of accomplishment...</i>",
-        choices: null,
-        next: "main_afterKillCitizen"
-    },
-    main_afterKillCitizen: {
-        text: "Wow ! Better throw that body in the river and discard those weapons tee-hee :D",
-        choices: null,
-        next: "main_afterKillCitizen2"
-    },
-    main_afterKillCitizen2: {
-        text: "Me ? Worried about the police ? No way ! I'm Goober ! I'm invincible !",
-        choices: null,
-        next: "main_afterKillCitizen3"
-    },
-    main_afterKillCitizen3: {
-        text: "<hide><i>You hear sirens coming closer...</i>",
-        choices: null,
-        next: "main_afterKillCitizen4"
-    },
-    main_afterKillCitizen4: {
-        text:"Let's go to your place, I feel at risk around here...",
-        choices: [
-            { label: "Hell no", next: "main_refuseGoToYourPlace" },
-            { label: "Sure", next: "main_acceptGoToYourPlace" }
-        ],
-        next: null
-    },
-    main_acceptGoToYourPlace: {
-        relationPoints: 1,
-        text: "Let's go then !",
-        next: "main_goToYourPlace"
-    },
-    main_refuseGoToYourPlace: {
-        text: "Like if I'm asking for your opinion haha!",
-        choices: null,
-        next: "main_goToYourPlace"
-    },
-    main_goToYourPlace : {
-        text: "<hide><i>You and Goober go to your place. You feel safe for now...</i>",
-        choices: null,
-        next: "main_atYourPlace"
-    },
-    main_atYourPlace: {
-        text: "Wow ! This is so much better ! I feel so safe here !",
-        choices: null,
-        next: "main_atYourPlace2"
-    },
-    main_atYourPlace2: {
-        text: "<hide><i>You and Goober chill at your place for a while. You feel safe, but you can't help but feel like something is missing...</i>",
-        choices: null,
-        next: "main_atYourPlace3"
-    },
-    main_atYourPlace3: {
-        text: "Have sex ?",
-        choices: [
-            { label: "Sure", next: "main_haveSex" },
-            { label: "No thanks", next: "main_atYourPlace4" }
-        ],
-        next: null
-    },
-    main_haveSex: {
-        text: "<hide><i>What are you thinking ? You just met !</i>",
-        choices: null,
-        next: "main_atYourPlace4"
-    }, 
-    main_atYourPlace4: {
-        text: "Welp, seems like they left. Guess I'll just go home then. See you !",
-        choices: null,
-        next: "main_dayTwo"
-    },
-    main_dayTwo: {
-        text: "<i>The next day...</i><br>Hey ! I had so much fun yesterday ! I found an old gym nearby, wanna go check it out ?",
-        choices: [
-            { label: "Sure", next: "path_dayTwoGym" },
-            { label: "No thanks", next: "path_dayTwoNoGym" }
-        ],
-        next: null
-    },
-    path_dayTwoGym: {
-        text: "<i>You and Goober then move to the old gym</i><br>Wow ! This place is so cool ! Let's go check it out !",
-        choices: null,
-        next: "path_dayTwoGym2"
-    },
-    path_dayTwoNoGym: {
-        text: "Oh, that's too bad. I really wanted to go check it out... If you want, we could go eat together instead ?",
-        choices: [
-            { label: "Yeah let's go", next: "path_dayTwoEat" },
-            { label: "You know what, let's go to the gym", next: "path_dayTwoGym" }
-        ],
-        next: null
-    },
-    path_dayTwoGym2: {
-        text: "Check this out ! I found paint buckets ! You know what that means !",
-        choices: [
-            { label: " Let's go paint the walls !", next: "path_dayTwoGymWrongAnswer" },
-            { label: " Let's go throw buckets at each other !", next: "path_dayTwoGymWrongAnswer" },
-            { label: " Let's go specifically find someone to fill up with paint buckets from the mouth, until they cannot breathe, until their lungs fill out, until their last gasp of air exits their body, and suffer from dread. Why did they chose this current day to hang out near this gym instead of building a life, founding a stable family and having kids, securing a nice future for themselves. Such a pityful fate to a honest soul like theirs.", next: "path_dayTwoGymRightAnswer" }
-        ],
-        next: null
-    },
-    path_dayTwoGymWrongAnswer: {
-        text: "Although it seems fun, I don't think this will do. Do you have any other ideas ?",
-        choices: [
-            { label: " Let's go specifically find someone to fill up with paint buckets from the mouth, until they cannot breathe, until their lungs fill out, until their last gasp of air exits their body, and suffer from dread. Why did they chose this current day to hang out near this gym instead of building a life, founding a stable family and having kids, securing a nice future for themselves. Such a pityful fate to a honest soul like theirs.", next: "path_dayTwoGymRightAnswer" }
-        ],
-        next: null
-    },
-    path_dayTwoGymRightAnswer: {
-        text: "Wow dude. That's dark. But it's a great idea ! Let's do it !",
-        choices: null,
-        next: "path_dayTwo_KillCitizen"
-    },
-    path_dayTwo_KillCitizen: {
-        text:"<i>By sheer luck, you find someone hanging out around, all alone... You then do what you have to do</i>",
-        choices: null,
-        next: "path_dayTwo_KillCitizen2"
-    },
-    path_dayTwo_KillCitizen2: {
-        text: "That was so much fun ! I feel so alive !(compared to that guy lmao) Thanks for doing that with me !<br>Let's go eat something now !",
-        choices: null,
-        next: "main_dayTwoEat"
-    },
-    main_dayTwoEat: {
-        text: "So what do you want to eat ?",
-        choices: [
-            { label: "Let's go to that new burger place", next: "path_dayTwoBurger" },
-            { label: "How about that Italian restaurant ?", next: "path_dayTwoItalian" }
-        ],
-        next: null
-    },
-    path_dayTwoBurger: {
-        text: "Yay ! I love burgers !",
-        choices: null,
-        next: "main_afterEat"
-    },
-    path_dayTwoItalian: {
-        text: "That sounds delicious !",
-        choices: null,
-        next: "main_afterEat"
-    },
-    main_afterEat: {
-        text: "Wow ! That was so good ! I had such a great time with you today ! I think I'm gonna head home now, see you tomorrow !",
-        choices: null,
-        next: null
+function saveGame() {
+    var saveData = {
+        currentNode: currentNode,
+        relationPoints: relationPoints,
+        nsfwMode: nsfwMode,
+        allDaysLog: allDaysLog
+    };
+    localStorage.setItem("gooberSave", JSON.stringify(saveData));
+    showSaveNotification("Game saved !");
+}
+
+function loadGame() {
+    var raw = localStorage.getItem("gooberSave");
+    if (!raw) {
+        showSaveNotification("No save found.");
+        return;
+    }
+    var saveData = JSON.parse(raw);
+    currentNode = saveData.currentNode;
+    relationPoints = saveData.relationPoints;
+    nsfwMode = saveData.nsfwMode;
+    allDaysLog = saveData.allDaysLog || [];
+    goToNode(currentNode);
+    showSaveNotification("Game loaded !");
+}
+
+function showSaveNotification(msg) {
+    var notif = document.getElementById("saveNotif");
+    if (!notif) return;
+    notif.textContent = msg;
+    notif.style.opacity = "1";
+    setTimeout(function () { notif.style.opacity = "0"; }, 2000);
+}
+
+function startNewDay() {
+    if (dayLog.length > 0) {
+        allDaysLog.push(dayLog);
+        dayLog = [];
+    }
+}
+
+function logChunk(text) {
+    dayLog.push(text);
+}
+
+// ---- Review system ----
+var reviewMode = false;
+var reviewDay = 0;
+var reviewIndex = 0;
+
+function openDayReview() {
+    if (allDaysLog.length === 0) {
+        showSaveNotification("No previous days to review !");
+        return;
     }
 
+    reviewMode = true;
+    reviewDay = 0;
+    reviewIndex = 0;
 
-};
+    var ui = document.getElementById("reviewUI");
+    if (ui) ui.style.display = "flex";
 
-var currentNode = "start";
+    var tabs = document.getElementById("reviewTabs");
+    tabs.innerHTML = "";
 
-// --- DOM Elements ---
+    allDaysLog.forEach(function (log, i) {
+        var btn = document.createElement("button");
+        btn.textContent = "Day " + (i + 1);
+        btn.className = "review-tab-btn" + (i === 0 ? " active" : "");
+        btn.onclick = function () {
+            reviewDay = i;
+            reviewIndex = 0;
+            document.querySelectorAll(".review-tab-btn").forEach(function (b) {
+                b.classList.remove("active");
+            });
+            btn.classList.add("active");
+            showReviewChunk();
+        };
+        tabs.appendChild(btn);
+    });
+
+    showReviewChunk();
+}
+
+function showReviewChunk() {
+    var log = allDaysLog[reviewDay];
+    if (!log) return;
+
+    reviewIndex = Math.max(0, Math.min(reviewIndex, log.length - 1));
+
+    document.getElementById("reviewText").innerHTML = log[reviewIndex];
+
+    document.getElementById("reviewPrev").disabled =
+        (reviewIndex === 0 && reviewDay === 0);
+
+    document.getElementById("reviewNext").disabled =
+        (reviewIndex === log.length - 1 && reviewDay === allDaysLog.length - 1);
+}
+
+function reviewNext() {
+    var log = allDaysLog[reviewDay];
+    if (reviewIndex < log.length - 1) {
+        reviewIndex++;
+    } else if (reviewDay < allDaysLog.length - 1) {
+        reviewDay++;
+        reviewIndex = 0;
+    }
+    showReviewChunk();
+}
+
+function reviewPrev() {
+    if (reviewIndex > 0) {
+        reviewIndex--;
+    } else if (reviewDay > 0) {
+        reviewDay--;
+        reviewIndex = allDaysLog[reviewDay].length - 1;
+    }
+    showReviewChunk();
+}
+
+function closeReview() {
+    reviewMode = false;
+    document.getElementById("reviewUI").style.display = "none";
+}
+
+// ---- DOM ----
 var textInput = document.querySelector("#textInput");
-var gooberTitle_image = document.querySelector("#gooberTitle");
 var gooberIntro_image = document.querySelector("#gooberIntro");
 var choiceButtons = document.querySelectorAll(".choice-btn");
 
-// --- Parse custom tags and apply effects ---
+var defaultEmotion = "../../textures/goober.png";
+
+// ---- Tags ----
 function applyCustomTags(text) {
-    if (text.startsWith("<hide>")) {
-        if (gooberIntro_image) gooberIntro_image.style.visibility = "hidden";
-        text = text.replace("<hide>", "");
+
+    if (text.includes("[hide]")) {
+        gooberIntro_image.style.visibility = "hidden";
+        text = text.replace("[hide]", "");
     } else {
-        if (gooberIntro_image) gooberIntro_image.style.visibility = "visible";
+        gooberIntro_image.style.visibility = "visible";
     }
+
+    text = text.replace(/\[bg\s+([^\]]+)\]/g, function (m, src) {
+        document.body.style.backgroundImage = "url('../../textures/" + src.trim() + "')";
+        return "";
+    });
+
+    var emotion = defaultEmotion;
+    text = text.replace(/\[e\s+([^\]]+)\]/g, function (m, src) {
+        emotion = "../../textures/" + src.trim();
+        return "";
+    });
+
+    gooberIntro_image.src = emotion;
     return text;
 }
 
-// --- Core function: go to any node by ID ---
-function goToNode(nodeId) {
-    currentNode = nodeId;
-    var node = dialogueTree[nodeId];
+// ---- Dialogue ----
+function showNextChunk() {
+    var node = dialogueTree[currentNode];
 
-    var cleanText = applyCustomTags(node.text);
+    var chunk = textQueue.shift();
+    var cleanText = applyCustomTags(chunk);
     textInput.innerHTML = cleanText;
 
-    if(node.relationPoints != undefined) {
-        textInput.innerHTML += "<br><i>(Relation points: " + relationPoints + " + " + node.relationPoints + ")</i>";
+    logChunk(cleanText);
+
+    if (textQueue.length > 0) return;
+
+    if (node.relationPoints != undefined) {
+        textInput.innerHTML += "<br><i>(Relation: " + relationPoints + " + " + node.relationPoints + ")</i>";
         relationPoints += node.relationPoints;
-        
     }
+
     if (node.choices) {
-        node.choices.forEach(function(choice, i) {
+        node.choices.forEach(function (choice, i) {
             if (choiceButtons[i]) {
                 choiceButtons[i].style.visibility = "visible";
                 choiceButtons[i].innerHTML = choice.label;
-                choiceButtons[i].onclick = function() {
+                choiceButtons[i].onclick = function () {
                     goToNode(choice.next);
                 };
             }
         });
-    } else {
-        choiceButtons.forEach(function(btn) {
-            btn.style.visibility = "hidden";
-        });
     }
 }
 
-// --- Advance dialogue ---
-function advanceDialogue() {
-    var node = dialogueTree[currentNode];
-    if (!node.choices) {
-        if (node.next) {
-            goToNode(node.next);
-        } else {
-            textInput.innerHTML = "This dev is a stupid ni- who didn't finish the game, so there's no more content to show !";
-        }
-    }
-}
+function goToNode(nodeId) {
 
-// --- Title screen: click to go to intro ---
-if (gooberTitle_image) {
-    gooberTitle_image.addEventListener("click", function() {
-        window.location.replace("ds_intro.html");
+    checkNSFWUnlock(nodeId); // 🔴 NEW
+
+    if (nodeId === "day2_main_intro") startNewDay();
+    if (nodeId.includes("glitch")) triggerGlitch(3);
+    if (nodeId === "day5_nsfw_end") fakeCrash();
+
+    currentNode = nodeId;
+    var node = dialogueTree[nodeId];
+
+    textQueue = node.text.split("[np]");
+
+    choiceButtons.forEach(function (btn) {
+        btn.style.visibility = "hidden";
+        btn.innerHTML = "";
+        btn.onclick = null;
     });
+
+    showNextChunk();
 }
 
-// --- Intro screen: click Goober to advance ---
-if (gooberIntro_image) {
-    gooberIntro_image.addEventListener("click", advanceDialogue);
+function advanceDialogue() {
+    if (reviewMode) return;
+
+    if (textQueue.length > 0) {
+        showNextChunk();
+        return;
+    }
+
+    var node = dialogueTree[currentNode];
+    if (!node.choices && node.next) {
+        goToNode(node.next);
+    }
 }
 
-// --- Spacebar also advances dialogue ---
-document.addEventListener("keydown", function(e) {
+// ---- Controls ----
+gooberIntro_image.addEventListener("click", advanceDialogue);
+
+document.addEventListener("keydown", function (e) {
     if (e.code === "Space") {
         e.preventDefault();
         advanceDialogue();
     }
 });
 
-// --- Start the game ---
-goToNode("start");
+function triggerGlitch(intensity = 1) {
+    document.body.classList.add("glitch");
+
+    setTimeout(() => {
+        document.body.classList.remove("glitch");
+    }, 200 * intensity);
+}
+
+function fakeCrash() {
+    textInput.innerHTML = "ERROR: connection lost.";
+
+    setTimeout(() => {
+        document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:20%;'>Session terminated</h1>";
+    }, 2000);
+}
+goToNode(currentNode);

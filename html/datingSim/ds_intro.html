@@ -8,7 +8,7 @@
     <body>
         <div class="title"><h1>Dating Sim</h1></div>
 
-        <div id="gooberIntro"><img src="../../textures/goober.png" alt="Gooby"></div>
+        <img src="../../textures/goober.png" alt="Gooby" id="gooberIntro">
 
         <div class="textBoxObject" id="gooberIntroText">
             <p id="textInput"></p>
@@ -19,6 +19,62 @@
             </div>
         </div>
 
+        <!-- Save/Load/Review buttons, sitting below the text box -->
+        <div id="saveControls">
+            <button onclick="saveGame()">Save</button>
+            <button onclick="loadGame()">Load</button>
+            <button onclick="openDayReview()">Review days</button>
+            <!-- This notification fades in/out when saving or loading -->
+            <span id="saveNotif" style="opacity:0; transition: opacity 0.5s;"></span>
+        </div>
+
+        <!-- 
+            Day review overlay — covers the whole screen when open.
+            display:none means it's invisible until openDayReview() is called.
+            position:fixed means it stays on screen even if the page scrolls.
+        -->
+        <div id="reviewUI" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); flex-direction:column; align-items:center; justify-content:center; z-index:999;">
+            <!-- Day tabs will be generated here dynamically by JS -->
+            <div id="reviewTabs" style="display:flex; gap:8px; margin-bottom:16px;"></div>
+            <!-- The text of the reviewed chunk is shown here -->
+            <div id="reviewText" style="color:white; max-width:600px; text-align:center; font-size:1.1em; margin-bottom:24px;"></div>
+            <div style="display:flex; gap:16px;">
+                <button id="reviewPrev" onclick="reviewPrev()">&#9664; Previous</button>
+                <button id="reviewNext" onclick="reviewNext()">Next &#9654;</button>
+                <button onclick="closeReview()">Close</button>
+            </div>
+        </div>
+
+        <!-- Load dialogue tree first, then the engine that runs it -->
+        <script src="../../js/dialogueTree.js"></script>
         <script src="../../js/datingSim.js"></script>
+
+
+        <div id="glitchOverlay"></div>
+
+        <style>
+        #glitchOverlay {
+            position: fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            pointer-events:none;
+            background:transparent;
+            z-index:9999;
+        }
+
+        .glitch {
+            animation: glitchAnim 0.2s infinite;
+        }
+
+        @keyframes glitchAnim {
+            0% { transform: translate(2px, -2px); }
+            25% { transform: translate(-2px, 2px); }
+            50% { transform: translate(2px, 2px); }
+            75% { transform: translate(-2px, -2px); }
+            100% { transform: translate(0,0); }
+        }
+        </style>
     </body>
 </html>
