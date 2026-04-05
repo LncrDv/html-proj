@@ -54,3 +54,53 @@ body {
     75%  { transform: translateX(-50%) translate(-1px, -2px); clip-path: inset(60% 0 5% 0); }
     100% { transform: translateX(-50%) translate(0, 0); }
 }
+/* ---- Sprite glitch effect ---- */
+#gooberIntro.glitching {
+    filter: hue-rotate(90deg) saturate(3) contrast(1.5);
+    animation: spriteGlitch 0.15s infinite;
+}
+
+@keyframes spriteGlitch {
+    0%   { transform: translateX(-50%) translate(2px, -1px); }
+    25%  { transform: translateX(-50%) translate(-3px, 2px);
+            clip-path: inset(10% 0 40% 0); }
+    50%  { transform: translateX(-50%) translate(1px, 3px);
+            filter: hue-rotate(180deg) saturate(5) contrast(2); }
+    75%  { transform: translateX(-50%) translate(-1px, -2px);
+            clip-path: inset(60% 0 5% 0); }
+    100% { transform: translateX(-50%) translate(0, 0); }
+}
+
+/* ---- Page glitch (body level) ---- */
+.glitch {
+    animation: glitchAnim 0.2s infinite;
+}
+
+@keyframes glitchAnim {
+    0%   { transform: translate(2px, -2px); }
+    25%  { transform: translate(-2px, 2px); }
+    50%  { transform: translate(2px, 2px); }
+    75%  { transform: translate(-2px, -2px); }
+    100% { transform: translate(0, 0); }
+}
+
+/* ---- Save controls positioning ---- */
+#saveControls {
+    position: fixed;
+    bottom: 200px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 20;
+}
+
+/* ---- Glitch overlay (keep transparent, animation is on body) ---- */
+#glitchOverlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    background: transparent;
+    z-index: 9999;
+}
