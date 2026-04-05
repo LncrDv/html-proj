@@ -171,8 +171,84 @@ var dialogueTree = {
     main_atYourPlace4: {
         text: "Welp, seems like they left. Guess I'll just go home then. See you !",
         choices: null,
+        next: "main_dayTwo"
+    },
+    main_dayTwo: {
+        text: "<i>The next day...</i><br>Hey ! I had so much fun yesterday ! I found an old gym nearby, wanna go check it out ?",
+        choices: [
+            { label: "Sure", next: "path_dayTwoGym" },
+            { label: "No thanks", next: "path_dayTwoNoGym" }
+        ],
+        next: null
+    },
+    path_dayTwoGym: {
+        text: "<i>You and Goober then move to the old gym</i><br>Wow ! This place is so cool ! Let's go check it out !",
+        choices: null,
+        next: "path_dayTwoGym2"
+    },
+    path_dayTwoNoGym: {
+        text: "Oh, that's too bad. I really wanted to go check it out... If you want, we could go eat together instead ?",
+        choices: [
+            { label: "Yeah let's go", next: "path_dayTwoEat" },
+            { label: "You know what, let's go to the gym", next: "path_dayTwoGym" }
+        ],
+        next: null
+    },
+    path_dayTwoGym2: {
+        text: "Check this out ! I found paint buckets ! You know what that means !",
+        choices: [
+            { label: " Let's go paint the walls !", next: "path_dayTwoGymWrongAnswer" },
+            { label: " Let's go throw buckets at each other !", next: "path_dayTwoGymWrongAnswer" },
+            { label: " Let's go specifically find someone to fill up with paint buckets from the mouth, until they cannot breathe, until their lungs fill out, until their last gasp of air exits their body, and suffer from dread. Why did they chose this current day to hang out near this gym instead of building a life, founding a stable family and having kids, securing a nice future for themselves. Such a pityful fate to a honest soul like theirs.", next: "path_dayTwoGymRightAnswer" }
+        ],
+        next: null
+    },
+    path_dayTwoGymWrongAnswer: {
+        text: "Although it seems fun, I don't think this will do. Do you have any other ideas ?",
+        choices: [
+            { label: " Let's go specifically find someone to fill up with paint buckets from the mouth, until they cannot breathe, until their lungs fill out, until their last gasp of air exits their body, and suffer from dread. Why did they chose this current day to hang out near this gym instead of building a life, founding a stable family and having kids, securing a nice future for themselves. Such a pityful fate to a honest soul like theirs.", next: "path_dayTwoGymRightAnswer" }
+        ],
+        next: null
+    },
+    path_dayTwoGymRightAnswer: {
+        text: "Wow dude. That's dark. But it's a great idea ! Let's do it !",
+        choices: null,
+        next: "path_dayTwo_KillCitizen"
+    },
+    path_dayTwo_KillCitizen: {
+        text:"<i>By sheer luck, you find someone hanging out around, all alone... You then do what you have to do</i>",
+        choices: null,
+        next: "path_dayTwo_KillCitizen2"
+    },
+    path_dayTwo_KillCitizen2: {
+        text: "That was so much fun ! I feel so alive !(compared to that guy lmao) Thanks for doing that with me !<br>Let's go eat something now !",
+        choices: null,
+        next: "main_dayTwoEat"
+    },
+    main_dayTwoEat: {
+        text: "So what do you want to eat ?",
+        choices: [
+            { label: "Let's go to that new burger place", next: "path_dayTwoBurger" },
+            { label: "How about that Italian restaurant ?", next: "path_dayTwoItalian" }
+        ],
+        next: null
+    },
+    path_dayTwoBurger: {
+        text: "Yay ! I love burgers !",
+        choices: null,
+        next: "main_afterEat"
+    },
+    path_dayTwoItalian: {
+        text: "That sounds delicious !",
+        choices: null,
+        next: "main_afterEat"
+    },
+    main_afterEat: {
+        text: "Wow ! That was so good ! I had such a great time with you today ! I think I'm gonna head home now, see you tomorrow !",
+        choices: null,
         next: null
     }
+
 
 };
 
