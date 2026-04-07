@@ -3,10 +3,10 @@
 // =============================================================
 
 // --- Game state ---
-// Note: nsfwMode is declared here but overwritten by loadNSFWState()
+// Note: creepyMode is declared here but overwritten by loadcreepyState()
 // before goToNode() is called, so the tree always gets the right value.
 var relationPoints  = 0;
-var nsfwMode        = false;
+var creepyMode        = false;
 var currentNode     = "day1_main_intro";
 
 var textQueue       = [];
@@ -18,25 +18,25 @@ var allDaysLog      = [];
 
 
 // ============================================================
-// NSFW UNLOCK — alternates each time the game is completed
+// creepy UNLOCK — alternates each time the game is completed
 // ============================================================
 
 function markGameComplete() {
     localStorage.setItem("gooberCompleted", "true");
 }
 
-function loadNSFWState() {
+function loadcreepyState() {
     var completed = localStorage.getItem("gooberCompleted") === "true";
-    var wasNSFW   = localStorage.getItem("gooberWasNSFW")   === "true";
+    var wascreepy   = localStorage.getItem("gooberWascreepy")   === "true";
 
     if (completed) {
         // Game just finished — flip mode for next run, consume the flag
-        nsfwMode = !wasNSFW;
-        localStorage.setItem("gooberWasNSFW", nsfwMode ? "true" : "false");
+        creepyMode = !wascreepy;
+        localStorage.setItem("gooberWascreepy", creepyMode ? "true" : "false");
         localStorage.removeItem("gooberCompleted"); // consume so it only fires once
     } else {
         // Mid-run — restore saved mode, don't reset it
-        nsfwMode = wasNSFW;
+        creepyMode = wascreepy;
     }
 }
 
@@ -49,7 +49,7 @@ function saveGame() {
     var saveData = {
         currentNode:    currentNode,
         relationPoints: relationPoints,
-        nsfwMode:       nsfwMode,
+        creepyMode:       creepyMode,
         allDaysLog:     allDaysLog
     };
     localStorage.setItem("gooberSave", JSON.stringify(saveData));
@@ -62,7 +62,7 @@ function loadGame() {
     var saveData   = JSON.parse(raw);
     currentNode    = saveData.currentNode;
     relationPoints = saveData.relationPoints;
-    nsfwMode       = saveData.nsfwMode;
+    creepyMode       = saveData.creepyMode;
     allDaysLog     = saveData.allDaysLog || [];
     goToNode(currentNode);
     showSaveNotification("Game loaded !");
@@ -343,7 +343,7 @@ function typewriterRender(htmlString, onDone) {
 // ============================================================
 // RUNTIME NODE RESOLUTION
 // Allows text/choices/next to be functions (() => ...) so they
-// can check nsfwMode at runtime instead of at load time.
+// can check creepyMode at runtime instead of at load time.
 // ============================================================
 
 function resolveNode(raw) {
@@ -358,7 +358,7 @@ function resolveNode(raw) {
 
 
 // ============================================================
-// RAPID SKIP DETECTION (Day 7 NSFW only)
+// RAPID SKIP DETECTION (Day 7 creepy only)
 // If the player holds Space and advances too fast, Goober notices
 // ============================================================
 
@@ -367,7 +367,7 @@ var rapidSkipCount   = 0;
 var goober7Responded = false; // only interrupt once per Day 7
 
 function checkRapidSkip() {
-    if (!currentNode.startsWith("day7") || !nsfwMode || goober7Responded) return false;
+    if (!currentNode.startsWith("day7") || !creepyMode || goober7Responded) return false;
 
     var now     = Date.now();
     var elapsed = now - lastAdvanceTime;
@@ -458,9 +458,9 @@ function goToNode(nodeId) {
 
     // Special node effects
     if (nodeId.includes("glitch"))                  triggerGlitch(3);
-    if (nodeId === "day5_nsfw_end" && nsfwMode)     triggerFakeCrash();
+    if (nodeId === "day5_creepy_end" && creepyMode)     triggerFakeCrash();
     if (nodeId === "post_game_sfw" ||
-        nodeId === "post_game_nsfw_leave")           markGameComplete();
+        nodeId === "post_game_creepy_leave")           markGameComplete();
 
     currentNode = nodeId;
     var node    = resolveNode(dialogueTree[nodeId]);
@@ -568,7 +568,7 @@ function triggerFakeCrash() {
                 }
 
                 // Continue story
-                goToNode("day5_nsfw_afterCrash");
+                goToNode("day5_creepy_afterCrash");
 
             }, 1000);
         }, 800);
@@ -591,5 +591,5 @@ function pick(arr) {
 // BOOT
 // ============================================================
 
-loadNSFWState();
+loadcreepyState();
 goToNode(currentNode);

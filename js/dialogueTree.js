@@ -298,7 +298,7 @@ var dialogueTree = {
             { label: "Italian",  next: "day2_italian" }
         ],
         // Ghost button — fades when hovered, only clickable by accident
-        ghostChoice: creepyMode ? { label: "Chinese", next: "day2_branch_ghost_glitch_chinese" } : null,
+        ghostChoice: () => creepyMode ? { label: "Chinese", next: "day2_branch_ghost_glitch_chinese" } : null,
         next: null
     },
 
