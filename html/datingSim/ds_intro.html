@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="../../css/page-dating_sim.css">
+        <title>Dating Sim</title>
+        <style>
+        #glitchOverlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            background: transparent;
+            z-index: 9999;
+        }
+
+        /* Applied to document.body during glitch events */
+        .glitch {
+            animation: glitchAnim 0.2s infinite;
+        }
+
+        @keyframes glitchAnim {
+            0%   { transform: translate(2px, -2px); }
+            25%  { transform: translate(-2px, 2px); }
+            50%  { transform: translate(2px, 2px); }
+            75%  { transform: translate(-2px, -2px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* Goober sprite glitch effect — applied via JS */
+        .glitching {
+            animation: spriteGlitch 0.15s infinite;
+            filter: hue-rotate(90deg) saturate(3);
+        }
+
+        @keyframes spriteGlitch {
+            0%   { transform: translate(3px, 0)  skewX(2deg); }
+            25%  { transform: translate(-3px, 1px) skewX(-2deg); }
+            50%  { transform: translate(1px, -2px) skewX(1deg); }
+            75%  { transform: translate(-1px, 2px) skewX(-1deg); }
+            100% { transform: translate(0, 0) skewX(0); }
+        }
+
+        /* Ghost button — fades on hover */
+        .ghost-btn {
+            opacity: 0.4;
+            transition: opacity 0.08s;
+        }
+        .ghost-btn:hover {
+            opacity: 0 !important;
+            pointer-events: none;
+        }
+
+        /* Review tab active state */
+        .review-tab-btn.active {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        </style>
+    </head>
+    <body>
+        <div class="title"><h1>Dating Sim</h1></div>
+
+        <img src="../../textures/goober.png" alt="Gooby" id="gooberIntro">
+
+        <div class="textBoxObject" id="gooberIntroText">
+            <p id="textInput"></p>
+            <div>
+                <!-- Three normal choice buttons + one ghost button -->
+                <button class="choice-btn">First Choice</button>
+                <button class="choice-btn">Second Choice</button>
+                <button class="choice-btn">Third Choice</button>
+                <button class="choice-btn ghost-btn" id="ghostChoice" style="visibility:hidden;"></button>
+            </div>
+        </div>
+
+        <!-- Save / Load / Review controls -->
+        <div id="saveControls">
+            <button onclick="saveGame()">Save</button>
+            <button onclick="loadGame()">Load</button>
+            <button onclick="openDayReview()">Review days</button>
+            <span id="saveNotif" style="opacity:0; transition: opacity 0.5s;"></span>
+        </div>
+
+        <!-- Day review overlay (hidden until openDayReview() is called) -->
+        <div id="reviewUI" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); flex-direction:column; align-items:center; justify-content:center; z-index:999;">
+            <div id="reviewTabs" style="display:flex; gap:8px; margin-bottom:16px;"></div>
+            <div id="reviewText" style="color:white; max-width:600px; text-align:center; font-size:1.1em; margin-bottom:24px;"></div>
+            <div style="display:flex; gap:16px;">
+                <button id="reviewPrev" onclick="reviewPrev()">&#9664; Previous</button>
+                <button id="reviewNext" onclick="reviewNext()">Next &#9654;</button>
+                <button onclick="closeReview()">Close</button>
+            </div>
+        </div>
+
+        <!-- Fullscreen glitch overlay (visual only, no interaction) -->
+        <div id="glitchOverlay"></div>
+
+        <!-- dialogueTree.js MUST load before datingSim.js -->
+        <script src="../../js/dialogueTreeFr.js"></script>
+        <script src="../../js/datingSim.js"></script>
+    </body>
+</html>
