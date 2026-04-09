@@ -1,24 +1,18 @@
-// =============================================================
-// DIALOGUE TREE — Full story, Days 1–7, SFW + creepy
-//
-// All fields that branch on creepyMode are arrow functions () => ...
-// evaluated at runtime by resolveNode(). Never at load time.
-//
-// Tags:
-//   [np]              new text box
-//   [hide]            hide Goober sprite
-//   [e file.png]      swap sprite image
-//   [e gooberGlitch]  apply CSS glitch to sprite
-//   [bg file.jpg]     swap background
-//
-// pick(arr) is defined in datingSim.js — returns a random element.
-// =============================================================
+/*
+DIALOGUE TREE
+
+All fields that branch on creepyMode are arrow functions () => ...
+evaluated at runtime by resolveNode(). Never at load time.
+
+Tags:
+[np]              new text box
+[hide]            hide Goober sprite
+[e file.png]      swap sprite image
+[e gooberGlitch]  apply CSS glitch to sprite
+[bg file.jpg]     swap background
+*/
 
 var dialogueTree = {
-
-// =========================================================
-// DAY 1 — MEETING
-// =========================================================
 
     day1_main_intro: {
         text: () => creepyMode
@@ -205,10 +199,6 @@ var dialogueTree = {
     },
 
 
-// =========================================================
-// DAY 2 — BUILDING TRUST
-// =========================================================
-
     day2_main_intro: {
         text: () => creepyMode
             ? "[bg town.jpg]You came back.[np]<i>Goober is waiting exactly where you met yesterday. Like they didn't move.</i>[np]<i>They say it like a fact being confirmed, not a greeting.</i>[np]Good."
@@ -297,7 +287,6 @@ var dialogueTree = {
             { label: "Burgers",  next: "day2_burgers" },
             { label: "Italian",  next: "day2_italian" }
         ],
-        // Ghost button — fades when hovered, only clickable by accident
         ghostChoice: () => creepyMode ? { label: "Chinese", next: "day2_branch_ghost_glitch_chinese" } : null,
         next: null
     },
@@ -320,7 +309,6 @@ var dialogueTree = {
         next: "day2_after_food"
     },
 
-    // Ghost path — brief glitch, then continues normally
     day2_branch_ghost_glitch_chinese: {
         text: "[bg black.jpg][e gooberGlitch]You're not supposed to be here.[np][bg restaurant.jpg][e gooberSurprised.png]<i>A blink. Like a skip in a record.</i>[np]<i>Goober is sitting across from you. The food in front of you is something you didn't order.</i>[np]<i>It's good, though.</i>[np][e gooberSerious.png]I like this place better.[np]<i>You ask what place.</i>[np]This one.[np]<i>They don't explain further. You don't ask.</i>",
         choices: null,
@@ -354,11 +342,6 @@ var dialogueTree = {
         next: "day3_main_intro",
         relationPoints: 2
     },
-
-
-// =========================================================
-// DAY 3 — REPEATING FEELING
-// =========================================================
 
     day3_main_intro: {
         text: () => creepyMode
@@ -464,7 +447,6 @@ var dialogueTree = {
         relationPoints: 1
     },
 
-    // --- NEW: Day 3 evening fills the gap after the bench ---
     day3_evening_activity: {
         text: () => creepyMode
             ? "[e gooberSerious.png]Come on.[np]<i>Goober stands. The conversation is over, apparently. Or filed somewhere.</i>[np]I want to show you something else."
@@ -537,11 +519,6 @@ var dialogueTree = {
         choices: null,
         next: "day4_main_intro"
     },
-
-
-// =========================================================
-// DAY 4 — CONTROL QUESTION
-// =========================================================
 
     day4_main_intro: {
         text: () => creepyMode
@@ -639,7 +616,6 @@ var dialogueTree = {
         next: "day4_afternoon2"
     },
 
-    // --- NEW: second afternoon beat on Day 4 ---
     day4_afternoon2: {
         text: () => creepyMode
             ? "[e gooberSerious.png]<i>Goober is quiet for a while. Long enough that you notice.</i>[np]Do you think about what things would be like if you'd made different choices ?[np]<i>The question is careful. Too careful.</i>[np]Not big ones. Small ones. Whether you turned left or right. Whether you said one thing instead of another."
@@ -674,11 +650,6 @@ var dialogueTree = {
         choices: null,
         next: "day5_main_intro"
     },
-
-
-// =========================================================
-// DAY 5 — PERSONAL SPACE
-// =========================================================
 
     day5_main_intro: {
         text: () => creepyMode
@@ -720,7 +691,10 @@ var dialogueTree = {
         text: () => creepyMode
             ? "[hide]<i>The room is sparse and deliberate. Whatever Goober keeps here, they keep for a reason. There isn't much they don't need.</i>[np][e gooberSerious.png]You're looking at things.[np]<i>Not a complaint.</i>[np]That's fine. I don't mind you looking."
             : "[hide]<i>You look around properly. There's a shelf that goes: books, a mug, three things that might be decorative or might be functional, books again. One wall has something pinned to it that you can't read from here.</i>[np][e goober.png]That's a list of things I want to do before I die.[np]<i>A pause.</i>[np]It's shorter than it sounds.",
-        choices: [
+        choices: () => creepyMode ? [
+            { label: "What's on that list ?",         next: "day5_brave"  },
+            { label: "What is is on detail ?",  next: "day5_list" }
+        ] : [
             { label: "What's on it ?",         next: "day5_list"  },
             { label: "That's kind of brave.",  next: "day5_brave" }
         ]
@@ -742,7 +716,6 @@ var dialogueTree = {
         next: "day5_room_objects"
     },
 
-    // --- NEW: lingering in the room, looking at small things ---
     day5_room_objects: {
         text: () => creepyMode
             ? "[hide]<i>You sit for a while. The room is very still. Goober watches you look at things without saying anything about it.</i>[np][e gooberSerious.png]You can ask, if you want.[np]<i>About anything.</i>[np]<i>The offer is specific somehow. Like there are particular questions they've been waiting for.</i>"
@@ -756,7 +729,6 @@ var dialogueTree = {
     day5_drawing: {
         text: () => creepyMode
             ? "[e gooberThinking.png]Something that isn't here yet.[np]<i>They say it without looking at you.</i>[np]Or something that already happened.[np]Hard to tell from the back."
-            // SFW already handled the drawing prompt above, so same branch
             : "[e gooberSad.png]Me neither.[np]<i>Goober looks at it for a moment.</i>[np]I think maybe they're waiting.[np]Like — not impatiently. Just. Aware that something is coming.[np]<i>They look away from it.</i>[np]I drew a lot when I was younger. Then I stopped.[np]<i>You ask why.[np]I don't know. At some point it felt like putting things down made them more real.[np]And I wasn't sure I wanted that.",
         choices: null,
         next: "day5_quiet"
@@ -776,7 +748,6 @@ var dialogueTree = {
         next: "day5_confession2"
     },
 
-    // --- NEW: follow-up to the confession ---
     day5_confession2: {
         text: "[e gooberSad.png]I don't know what to do with that.[np]<i>Goober says it quietly. Like they're reporting a fact about themselves from the outside.</i>[np]Like — I notice it now. And I don't know if that's better or worse than not noticing.[np]<i>A long pause.</i>[np]Is it okay that I told you that ?",
         choices: [
@@ -818,11 +789,6 @@ var dialogueTree = {
         choices: null,
         next: "day6_main_intro"
     },
-
-
-// =========================================================
-// DAY 6 — EMOTIONAL MOMENT
-// =========================================================
 
     day6_main_intro: {
         text: () => creepyMode
@@ -879,7 +845,10 @@ var dialogueTree = {
         text: () => creepyMode
             ? "[hide]<i>You walk until the streetlights come on. Goober talks less than usual. But stays close.</i>[np][e gooberSerious.png]Do you see other people ?[np]<i>Not romantically. Not only romantically.</i>[np]Like — other people. When you're not here."
             : "[hide]<i>You walk until the lights come on. The town looks better at dusk. Everything blurred at the edges in a way that's kind.</i>[np][e gooberThinking.png]I keep thinking about something.[np]<i>You look at them.</i>[np]What it would be like if things stayed like this. This — shape of days.",
-        choices: [
+        choices: () => creepyMode ? [
+            { label: "Sometimes",  next: "day6_nice"   },
+            { label: "No, I don't want them to know what I really feel",  next: "day6_change" }
+        ] : [
             { label: "That's a nice thought.",  next: "day6_nice"   },
             { label: "Things change, though.",  next: "day6_change" }
         ]
@@ -887,7 +856,7 @@ var dialogueTree = {
 
     day6_nice: {
         text: () => creepyMode
-            ? "[e gooberSmug.png]Yes.[np]<i>Goober looks at you. Not the street. You.</i>[np]It is.[np]<i>Pause.</i>[np]I'm glad you think so too."
+            ? "[e gooberSmug.png]Oh yeah ?[np]<i>Goober looks at you. Not the street. You.</i>[np]Doesn't seem like it.[np]<i>Pause.</i>"
             : "[e gooberFluttered.png]Right ?[np]<i>Goober smiles. Real this time. It reaches all the way.</i>[np]I don't want to be dramatic about it.[np]<i>They are, slightly. You don't mind.</i>",
         choices: null,
         next: "day6_late_walk"
@@ -901,7 +870,6 @@ var dialogueTree = {
         next: "day6_late_walk"
     },
 
-    // --- NEW: a longer beat before the goodbye ---
     day6_late_walk: {
         text: () => creepyMode
             ? "[hide]<i>You walk further than usual. Past the places you've been before, into streets that are quieter and less familiar.</i>[np][e gooberSerious.png]I've been thinking about tomorrow.[np]<i>You ask what they mean.</i>[np]<i>Goober doesn't answer right away. They look at the street ahead like they're reading something on it.</i>[np]Just — tomorrow.[np]<i>There's a weight to the word that doesn't make sense yet.</i>"
@@ -946,10 +914,6 @@ var dialogueTree = {
     },
 
 
-// =========================================================
-// DAY 7 — THE COLLAPSE
-// =========================================================
-
     day7_main_intro: {
         text: () => creepyMode
             ? "[bg black.jpg][hide]<i>Day 7.</i>[np]<i>Something is different. The light is wrong. The edges are wrong.</i>[np]<i>Goober is waiting. Very still.</i>[np][e gooberSerious.png]You know what today is."
@@ -957,8 +921,6 @@ var dialogueTree = {
         choices: null,
         next: () => creepyMode ? "day7_creepy_phase1" : "day7_sfw_start"
     },
-
-    // ---- SFW Day 7 ----
 
     day7_sfw_start: {
         text: "[e gooberSad.png]This is where it ends, right ?[np]<i>You don't answer. There isn't a good one.</i>[np]I thought so.[np]<i>They sit down.</i>",
@@ -986,7 +948,6 @@ var dialogueTree = {
         next: "day7_sfw_middle"
     },
 
-    // --- NEW: extended middle section for SFW Day 7 ---
     day7_sfw_middle: {
         text: "[e gooberThinking.png]<i>A long quiet.</i>[np]I keep thinking about the gym.[np]<i>You ask what they mean.</i>[np]What we painted.[np]<i>A pause.</i>[np]It'll still be there. After we're not.[np]<i>Something about the way they say it. Not tragic. Just factual. Just noticing the thing.</i>",
         choices: null,
@@ -1026,8 +987,6 @@ var dialogueTree = {
         choices: null,
         next: null
     },
-
-    // ---- creepy Day 7 ----
 
     day7_creepy_phase1: {
         text: "[bg black.jpg][hide]<i>It's quiet.</i>[np]<i>Goober stands very still. Listening to something you can't hear.</i>[np][e gooberSerious.png]This isn't a place.[np]<i>A pause.</i>[np]It's structured.[np]<i>Another pause. Longer.</i>[np]There are rules.",

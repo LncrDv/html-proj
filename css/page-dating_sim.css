@@ -95,7 +95,6 @@ body {
     z-index: 20;
 }
 
-/* ---- Glitch overlay (keep transparent, animation is on body) ---- */
 #glitchOverlay {
     position: fixed;
     top: 0; left: 0;
@@ -103,4 +102,47 @@ body {
     pointer-events: none;
     background: transparent;
     z-index: 9999;
+}
+
+/* Applied to document.body during glitch events */
+.glitch {
+    animation: glitchAnim 0.2s infinite;
+}
+
+@keyframes glitchAnim {
+    0%   { transform: translate(2px, -2px); }
+    25%  { transform: translate(-2px, 2px); }
+    50%  { transform: translate(2px, 2px); }
+    75%  { transform: translate(-2px, -2px); }
+    100% { transform: translate(0, 0); }
+}
+
+/* Goober sprite glitch effect — applied via JS */
+.glitching {
+    animation: spriteGlitch 0.15s infinite;
+    filter: hue-rotate(90deg) saturate(3);
+}
+
+@keyframes spriteGlitch {
+    0%   { transform: translate(3px, 0)  skewX(2deg); }
+    25%  { transform: translate(-3px, 1px) skewX(-2deg); }
+    50%  { transform: translate(1px, -2px) skewX(1deg); }
+    75%  { transform: translate(-1px, 2px) skewX(-1deg); }
+    100% { transform: translate(0, 0) skewX(0); }
+}
+
+/* Ghost button — fades on hover */
+.ghost-btn {
+    opacity: 0.4;
+    transition: opacity 0.08s;
+}
+.ghost-btn:hover {
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+/* Review tab active state */
+.review-tab-btn.active {
+    font-weight: bold;
+    text-decoration: underline;
 }

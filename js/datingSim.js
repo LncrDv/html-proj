@@ -1,10 +1,3 @@
-// =============================================================
-// DATING SIM ENGINE
-// =============================================================
-
-// --- Game state ---
-// Note: creepyMode is declared here but overwritten by loadcreepyState()
-// before goToNode() is called, so the tree always gets the right value.
 var relationPoints  = 0;
 var creepyMode        = false;
 var currentNode     = "day1_main_intro";
@@ -16,18 +9,15 @@ var skipTyping      = false;
 var dayLog          = [];
 var allDaysLog      = [];
 
-
-// ============================================================
-// creepy UNLOCK — alternates each time the game is completed
-// ============================================================
-
+//Pour savoir si le jeu a été complété au moins une fois, pour débloquer la fin alternative
 function markGameComplete() {
     localStorage.setItem("gooberCompleted", "true");
 }
 
+//Vérifier l'état de complétion pour débloquer la fin alternative, et basculer le mode creepy en conséquence
 function loadcreepyState() {
-    var completed = localStorage.getItem("gooberCompleted") === "true";
-    var wascreepy   = localStorage.getItem("gooberWascreepy")   === "true";
+    var completed = localStorage.getItem("gooberCompleted") === "true"; //Vérifie le cookie nommé 'gooberCompleted' pour voir si le jeu a été complété au moins une fois
+    var wascreepy   = localStorage.getItem("gooberWascreepy")   === "true"; //Récupère le mode creepy précédent du cookie 'gooberWascreepy' pour le restaurer pendant la partie en cours
 
     if (completed) {
         // Game just finished — flip mode for next run, consume the flag
@@ -40,26 +30,22 @@ function loadcreepyState() {
     }
 }
 
-
-// ============================================================
-// SAVE / LOAD
-// ============================================================
-
 function saveGame() {
     var saveData = {
         currentNode:    currentNode,
         relationPoints: relationPoints,
         creepyMode:       creepyMode,
         allDaysLog:     allDaysLog
-    };
-    localStorage.setItem("gooberSave", JSON.stringify(saveData));
+    };  //Convertit en objet JavaScript contenant les données de sauvegarde du jeu, y compris le nœud actuel, les points de relation, le mode creepy et les journaux de tous les jours
+    localStorage.setItem("gooberSave", JSON.stringify(saveData));   //Range le dictionnaire dans un cookie nommé 'gooberSave' après l'avoir converti en chaîne JSON, pour pouvoir le récupérer plus tard et restaurer l'état du jeu
     showSaveNotification("Game saved !");
 }
 
 function loadGame() {
-    var raw = localStorage.getItem("gooberSave");
-    if (!raw) { showSaveNotification("No save found."); return; }
-    var saveData   = JSON.parse(raw);
+    var rawSaveData = localStorage.getItem("gooberSave");
+    if (!rawSaveData) { showSaveNotification("No save found."); return; }
+    var saveData   = JSON.parse(rawSaveData);   //Ca décode et relit l'info brut du cookie 'gooberSave' pour restaurer les données de sauvegarde du jeu, et les stocke dans un objet JavaScript
+    //Applique toutes les variables aux données sauvegardées pour restaurer l'état du jeu
     currentNode    = saveData.currentNode;
     relationPoints = saveData.relationPoints;
     creepyMode       = saveData.creepyMode;
@@ -67,7 +53,7 @@ function loadGame() {
     goToNode(currentNode);
     showSaveNotification("Game loaded !");
 }
-
+//Affichage du popup de notification de sauvegarde/chargement, avec un message personnalisé
 function showSaveNotification(msg) {
     var notif = document.getElementById("saveNotif");
     if (!notif) return;
@@ -76,22 +62,12 @@ function showSaveNotification(msg) {
     setTimeout(function () { notif.style.opacity = "0"; }, 2000);
 }
 
-
-// ============================================================
-// DAY LOGGING — feeds the review system
-// ============================================================
-
 function startNewDay() {
     if (dayLog.length > 0) { allDaysLog.push(dayLog); dayLog = []; }
 }
 
 // Called every time a chunk is displayed
 function logChunk(text) { dayLog.push(text); }
-
-
-// ============================================================
-// DAY REVIEW SYSTEM
-// ============================================================
 
 var reviewMode  = false;
 var reviewDay   = 0;
@@ -103,12 +79,13 @@ function openDayReview() {
     reviewDay   = 0;
     reviewIndex = 0;
 
-    var ui = document.getElementById("reviewUI");
+    var ui = document.getElementById("reviewUI");   //affecte dans 'ui' la référence à l'élément HTML avec l'id 'reviewUI'
     if (ui) ui.style.display = "flex";
 
-    // Build day tab buttons dynamically
+    // Crée les tabs (jour 1, jour 2 etc.)
     var tabs = document.getElementById("reviewTabs");
     tabs.innerHTML = "";
+    // Pour chaque jour dans 'allDaysLog', crée une tab correspondant, avec un gestionnaire d'événements pour afficher les chunks de ce jour lorsqu'il est cliqué, et ajoute le bouton à l'interface de revue
     allDaysLog.forEach(function (log, i) {
         var btn         = document.createElement("button");
         btn.textContent = "Day " + (i + 1);
@@ -152,10 +129,7 @@ function closeReview() {
     document.getElementById("reviewUI").style.display = "none";
 }
 
-
-// ============================================================
 // DOM REFERENCES
-// ============================================================
 
 var textInput         = document.querySelector("#textInput");
 var gooberIntro_image = document.querySelector("#gooberIntro");
@@ -163,10 +137,7 @@ var choiceButtons     = document.querySelectorAll(".choice-btn:not(.ghost-btn)")
 var ghostBtn          = document.getElementById("ghostChoice");
 var defaultEmotion    = "../../textures/goober.png";
 
-
-// ============================================================
-// AUDIO — Undertale-style talk beeps
-// ============================================================
+//AUDIO
 
 var audioCtx     = null;
 var beepInterval = null;
@@ -178,38 +149,32 @@ function getAudioCtx() {
 
 function playTalkBeep() {
     try {
-        var ctx  = getAudioCtx();
-        var osc  = ctx.createOscillator();
-        var gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.frequency.value = 280 + Math.random() * 120;
-        osc.type            = "sine";
-        gain.gain.setValueAtTime(0.07, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.065);
-        osc.start(ctx.currentTime);
-        osc.stop(ctx.currentTime + 0.065);
-    } catch (e) { /* fail silently */ }
+        var ctx  = getAudioCtx();   //Crée nv truc audioContext pour jouer un son de bip, si ce n'est pas déjà fait, et le stocke dans 'ctx'
+        var osc  = ctx.createOscillator();  //Crée un oscillateur pour générer un son de bip, et le stocke dans 'osc'
+        var gain = ctx.createGain();    //Crée un gain pour contrôler le volume du bip, et le stocke dans 'gain'
+        osc.connect(gain);  //Connecte l'oscillateur au gain pour que le son puisse être entendu
+        gain.connect(ctx.destination); //Connecte le gain à la sortie audio
+        osc.frequency.value = 280 + Math.random() * 120;    //Fréquence du bip, avec un peu de random
+        osc.type            = "sine";   //Vague Sinus
+        gain.gain.setValueAtTime(0.07, ctx.currentTime); //Définit le volume du bip
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.065); //Bcp de maths chiantes pour juste baisser le volume rapidement
+        osc.start(ctx.currentTime); //Démarre le bip immédiatement
+        osc.stop(ctx.currentTime + 0.065);  //Arrête le bip après 65ms pour éviter les bips qui durent trop longtemps
+    } catch (e) { /*Si ca marche pas pas d'erreur*/}
 }
 
 function startTalkSound() { stopTalkSound(); beepInterval = setInterval(playTalkBeep, 55); }
 function stopTalkSound()  { if (beepInterval) { clearInterval(beepInterval); beepInterval = null; } }
 
 
-// ============================================================
 // SPRITE GLITCH
-// ============================================================
 
 function setGooberGlitch(on) {
     if (on) gooberIntro_image.classList.add("glitching");
     else    gooberIntro_image.classList.remove("glitching");
 }
 
-
-// ============================================================
-// GHOST BUTTON
-// Re-appears 3 seconds after being hovered away
-// ============================================================
+//GHOST BUTTON
 
 if (ghostBtn) {
     ghostBtn.addEventListener("mouseenter", function () {
@@ -221,14 +186,13 @@ if (ghostBtn) {
                 ghostBtn.style.opacity       = "0.4";
                 ghostBtn.style.pointerEvents = "auto";
             }
-        }, 3000);
+        }, 10000);
     });
 }
 
 
-// ============================================================
 // CUSTOM TAG PARSER
-// ============================================================
+
 
 function applyCustomTags(text) {
     // [hide] — hide sprite
@@ -266,10 +230,7 @@ function applyCustomTags(text) {
     return text.trim();
 }
 
-
-// ============================================================
-// TYPEWRITER RENDERER
-// ============================================================
+//AFFICHAGE DU TEXTE PROGRESSIF (machine à écrire)
 
 function typewriterRender(htmlString, onDone) {
     textInput.innerHTML = "";
@@ -280,9 +241,10 @@ function typewriterRender(htmlString, onDone) {
     var rendered = "";
     var len      = htmlString.length;
 
-    // Suppress beeps on pure narration (italics)
-    if (!/^\s*<i>/.test(htmlString)) startTalkSound();
+    // Pas de beeps si en italique
+    if (!/^\s*<i>/.test(htmlString)) startTalkSound();  //Truc de syntaxe que j'ai chopé sur stackOverflow pour check si c'est en italique
 
+    //Avance d'une lettre
     function step() {
         if (skipTyping) {
             stopTalkSound();
@@ -299,7 +261,7 @@ function typewriterRender(htmlString, onDone) {
             return;
         }
 
-        // Consume full HTML tags instantly
+        // Eviter que le tag HTML (<i>) soit affiché en texte avant d'avoir été détecté et appliqué
         if (htmlString[i] === "<") {
             var close = htmlString.indexOf(">", i);
             if (close !== -1) {
@@ -311,7 +273,7 @@ function typewriterRender(htmlString, onDone) {
             }
         }
 
-        // Consume HTML entities instantly
+        // Même chose pour les entités HTML (&lt; &gt; etc.) pour éviter d'afficher du texte bizarre avant de le parser correctement
         if (htmlString[i] === "&") {
             var semi = htmlString.indexOf(";", i);
             if (semi !== -1 && semi - i < 8) {
@@ -499,9 +461,8 @@ function advanceDialogue() {
 }
 
 
-// ============================================================
 // CONTROLS
-// ============================================================
+
 
 gooberIntro_image.addEventListener("click", advanceDialogue);
 
@@ -510,9 +471,7 @@ document.addEventListener("keydown", function (e) {
 });
 
 
-// ============================================================
 // VISUAL EFFECTS
-// ============================================================
 
 function triggerGlitch(intensity) {
     intensity = intensity || 1;
