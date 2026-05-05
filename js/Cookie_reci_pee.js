@@ -1,21 +1,25 @@
 const cookieIncreaseButton = document.querySelector("#cookieIncrease");
 const cookieDecreaseButton = document.querySelector("#cookieDecrease");
 const counterDisplay = document.querySelector("#counter");
+
 var value_incremented = 1
 var value_decremented = 1
 var value = 1
+
 cookieIncreaseButton.addEventListener("click", () => {
     value += value_incremented
     value_incremented = Math.floor(Math.random() * 10)
     cookieIncreaseButton.innerText = "Increase by " + value_incremented
     UpdateDisplay();
     });
+
 cookieDecreaseButton.addEventListener("click", () => {
     value -= value_decremented
     value_decremented = Math.floor(Math.random() * 10)
     cookieDecreaseButton.innerText = "Decrease by " + value_decremented
         UpdateDisplay();
     });
+    
 function UpdateDisplay() {
     counterDisplay.innerText = value;
     document.querySelector("#ingredient1").textContent = 30*value;
